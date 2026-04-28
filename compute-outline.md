@@ -93,6 +93,45 @@ Event-driven / short tasks?
 
 ---
 
+## 8. Azure Arc
+
+### What It Is
+Azure Arc **projects non-Azure resources into Azure Resource Manager**, enabling you to manage on-premises servers, Kubernetes clusters, and databases using Azure tools, policies, and services — regardless of where they run.
+
+### What Azure Arc Can Manage
+
+| Resource Type | Description |
+|---|---|
+| **Arc-enabled Servers** | Windows/Linux machines on-prem, AWS, GCP — manage with Azure Policy, Defender, Monitor, Update Manager |
+| **Arc-enabled Kubernetes** | Any Kubernetes cluster (on-prem, EKS, GKE) — deploy workloads via GitOps, apply Azure Policy |
+| **Arc-enabled Data Services** | Run Azure SQL Managed Instance or PostgreSQL on any infrastructure |
+| **Arc-enabled VMware/SCVMM** | Manage VMware vSphere or Hyper-V VMs from Azure portal |
+
+### Key Capabilities Enabled by Arc
+
+| Capability | What It Does |
+|---|---|
+| **Azure Policy (Guest Config)** | Apply and audit compliance rules on non-Azure servers |
+| **Microsoft Defender for Cloud** | Threat protection for on-premises and multi-cloud servers |
+| **Azure Monitor** | Collect metrics and logs from Arc servers into Log Analytics |
+| **Update Manager** | Centralize OS patching across Azure + non-Azure |
+| **Role-Based Access Control (RBAC)** | Use Azure RBAC to control access to on-premises resources |
+| **GitOps (Kubernetes)** | Declarative Kubernetes config via Git repo using Flux |
+
+### Exam Decision Points
+
+| Scenario | Answer |
+|---|---|
+| Enforce Azure Policy on on-premises Linux servers | Azure Arc-enabled Servers |
+| Use Azure Monitor to collect logs from AWS EC2 instances | Azure Arc-enabled Servers |
+| Deploy workloads to on-premises Kubernetes using Azure tools | Azure Arc-enabled Kubernetes |
+| Run Azure SQL Managed Instance in on-premises datacenter | Azure Arc-enabled Data Services |
+| Centrally manage VMware VMs from Azure portal | Azure Arc-enabled VMware vSphere |
+
+> **Exam tip:** Azure Arc doesn't move workloads to Azure — it brings Azure management **to** the workload wherever it runs. When a scenario asks "manage on-premises or multi-cloud servers with Azure Policy / Defender / Monitor" — the answer is **Azure Arc**.
+
+---
+
 ## Exam Tips
 - **Lift-and-shift** scenarios = VMs
 - **Microservices at scale** = AKS
@@ -101,3 +140,4 @@ Event-driven / short tasks?
 - Know the **App Service plan tiers** — Isolated is the answer for "fully isolated network"
 - AKS with Azure CNI is required for VNet-integrated pods
 - Durable Functions for **long-running, stateful workflows** in serverless
+- **On-premises / multi-cloud management via Azure** = Azure Arc (policy, monitoring, Defender)

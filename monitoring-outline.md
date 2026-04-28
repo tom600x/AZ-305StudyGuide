@@ -72,6 +72,45 @@
 
 ---
 
+## SLA Quick Reference — Tier Edge Cases
+
+Exam questions frequently test whether you know which tier gains or loses SLA.
+
+| Service | Tier / Config | SLA | Key Note |
+|---|---|---|---|
+| **APIM** | Consumption | 99.95% | Serverless, no dedicated infra |
+| **APIM** | Developer | **No SLA** | Never use in production |
+| **APIM** | Basic / Standard / Premium | 99.95% | Premium adds multi-region |
+| **Azure Cache for Redis** | Basic | **No SLA** | Dev/test only |
+| **Azure Cache for Redis** | Standard | 99.9% | Primary + replica |
+| **Azure Cache for Redis** | Premium | 99.9% + zone redundancy option | Adds persistence, clustering |
+| **App Service** | Free / Shared | **No SLA** | Not for production |
+| **App Service** | Basic and above | 99.95% | Basic has no autoscale |
+| **Azure SQL Database** | General Purpose (single) | 99.99% | |
+| **Azure SQL Database** | Business Critical (single) | 99.99% | Adds readable secondary |
+| **Azure SQL Database** | Hyperscale | 99.99% | |
+| **Azure Functions** | Consumption | 99.95% | |
+| **Azure Functions** | Premium | 99.95% | Pre-warmed, VNet |
+| **VMs** | Single VM with Premium SSD | 99.9% | |
+| **VMs** | Availability Set | 99.95% | Same datacenter, different fault domains |
+| **VMs** | Availability Zones | 99.99% | Different datacenters in region |
+| **Storage Account** | LRS | 99.9% read / 99.9% write | |
+| **Storage Account** | ZRS | 99.99% read / 99.9% write | |
+| **Storage Account** | GRS/RA-GRS | 99.9% / 99.99% read | RA-GRS adds secondary read |
+| **AKS** | Free tier | **No SLA** | Dev/test clusters |
+| **AKS** | Standard tier | 99.5% API server | Paid tier with SLA |
+| **AKS** | Premium tier | 99.95% API server | Adds longer support |
+| **Azure Kubernetes Service** | + Availability Zones | 99.9% nodes | Node pool spread |
+| **Event Hubs** | Basic | 99.95% | |
+| **Event Hubs** | Standard | 99.95% | Adds consumer groups |
+| **Event Hubs** | Premium / Dedicated | 99.95% | Adds zone redundancy |
+| **Service Bus** | Basic | 99.9% | No topics |
+| **Service Bus** | Standard / Premium | 99.9% | Premium adds VNet, zone redundancy |
+
+> **Exam tip:** Any **Developer** or **Free/Shared/Basic** tier (APIM Developer, Redis Basic, App Service Free/Shared, AKS Free) typically means **no production SLA**. Upgrading to the next tier is the fix.
+
+---
+
 ## Exam Tips
 - **Log Analytics workspace** is the backbone of most monitoring scenarios
 - Know **AMA** is the current agent; MMA is legacy

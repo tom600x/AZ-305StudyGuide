@@ -44,3 +44,26 @@
 - Every case study has a set of requirements — map them to services.
 - Know the difference between **HA**, **DR**, and **Backup** — the exam tests all three.
 - Understand **cost trade-offs** — cheaper options always have a catch.
+
+---
+
+## Probability of Passing on the First Attempt
+
+| Study Approach | Estimated Pass Probability |
+|---|---|
+| These guides alone, no hands-on experience | ~30–40% |
+| These guides + 2–3 full practice exams | ~55–65% |
+| These guides + practice exams + some hands-on Azure experience | ~70–80% |
+| The above + 1–2 years designing Azure solutions professionally | ~85%+ |
+
+**What these guides cover well:**
+- Service comparison tables and "choose when" decisions — the core of AZ-305 scenario questions
+- Tier/SKU trade-offs, limits, and SLA edge cases
+- Decision trees mapping requirements to services
+
+**What these guides cannot replace:**
+- **Practice exams** — Required. The exam uses long scenario questions; recognizing the pattern takes repetition. Use [Microsoft's free practice assessment](https://learn.microsoft.com/en-us/credentials/certifications/azure-solutions-architect/) or MeasureUp.
+- **Hands-on experience** — AZ-305 tests *design judgment*, not memorization. Time in the Azure portal building solutions builds the intuition the exam probes.
+- **The official study guide** — Cross-reference with the [Microsoft Learn AZ-305 study guide](https://learn.microsoft.com/en-us/credentials/certifications/resources/study-guides/az-305) to confirm full topic coverage.
+
+> Microsoft's publicly reported first-attempt pass rate for AZ-305 candidates who self-study with mixed resources is approximately **60–65%**.

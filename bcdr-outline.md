@@ -57,6 +57,35 @@
 - Customer-managed failover → manual, data loss possible (recovery point varies)
 - RA-GRS/RA-GZRS → read from secondary while primary is degraded
 
+### 7. Azure Backup Center
+
+#### What It Is
+Azure Backup Center provides a **unified management console** for all Azure Backup and Azure Site Recovery operations across subscriptions, resource groups, vaults, and regions — without navigating individual Recovery Services vaults.
+
+#### Key Capabilities
+
+| Capability | Description |
+|---|---|
+| **Unified inventory** | View all protected items, vaults, and policies across subscriptions in one place |
+| **Governance** | Monitor backup compliance — identify unprotected workloads, policy non-compliance |
+| **Monitoring & Alerts** | Aggregated backup jobs, alerts, and anomalies across all vaults |
+| **Backup reports** | Azure Monitor Workbooks-based reports on storage, jobs, and trends |
+| **At-scale operations** | Trigger backup/restore, update policies across multiple items simultaneously |
+| **Datasource-centric view** | View backup status from the resource's perspective, not the vault's |
+
+#### Supported Datasources
+Azure VMs, SQL on Azure VMs, SAP HANA on Azure VMs, Azure Files, Azure Blobs, Azure Disks, Azure Database for PostgreSQL
+
+#### Backup Center vs Recovery Services Vault
+
+| | Recovery Services Vault | Backup Center |
+|---|---|---|
+| **Scope** | Single vault | Cross-vault, cross-subscription |
+| **Use for** | Configure backup policies, perform restores | Monitor compliance, governance at scale |
+| **Cost** | No additional cost (vault resource) | No additional cost (management layer) |
+
+> **Exam tip:** When a scenario asks for **centralized backup monitoring and governance across multiple subscriptions or vaults** — the answer is **Azure Backup Center**, not individual Recovery Services vaults.
+
 ---
 
 ## Exam Tips
@@ -65,3 +94,4 @@
 - Auto-failover groups (SQL) provide seamless failover with a consistent endpoint
 - Availability Zones ≠ regions — AZs protect against datacenter failure, not regional failure
 - Site Recovery is the go-to answer for VM-level DR across regions
+- **Centralized backup monitoring across subscriptions** = Azure Backup Center

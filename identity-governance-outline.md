@@ -300,7 +300,7 @@ Central monitoring platform collecting metrics, logs, and traces.
 | **Smart detection** | ML-based anomaly detection | Application Insights |
 
 ### Application Insights
-- APM (Application Performance Monitoring) — part of Azure Monitor
+- Application Performance Monitoring (APM) — part of Azure Monitor
 - Tracks: Requests, exceptions, dependencies, page views, custom events
 - **Availability tests:** HTTP ping tests from multiple regions
 - **Application Map:** Visual distributed system topology
@@ -324,7 +324,50 @@ Central monitoring platform collecting metrics, logs, and traces.
 
 ---
 
-## 10. Exam Scenario Cheat Sheet
+## 10. Microsoft Sentinel
+
+### What It Is
+Microsoft Sentinel is a cloud-native **SIEM (Security Information and Event Management)** and **SOAR (Security Orchestration, Automation, and Response)** platform built on Azure Monitor / Log Analytics.
+
+### Key Capabilities
+
+| Capability | Description |
+|---|---|
+| **Data connectors** | Ingest logs from Azure, M365, AWS, Syslog, CEF, and 3rd-party products |
+| **Analytics rules** | Detect threats via scheduled KQL queries or ML-based fusion rules |
+| **Incidents** | Grouped related alerts into actionable investigations |
+| **Workbooks** | Interactive dashboards for security monitoring |
+| **Playbooks** | Azure Logic Apps workflows triggered on alerts/incidents (SOAR) |
+| **Threat hunting** | Proactive KQL-based queries against raw logs |
+| **UEBA** | User and Entity Behavior Analytics — detect anomalous activity |
+| **Threat intelligence** | Import indicators of compromise (IoCs) to enrich alerts |
+
+### Sentinel vs Defender for Cloud
+
+| | Microsoft Sentinel | Microsoft Defender for Cloud |
+|---|---|---|
+| **Primary role** | SIEM/SOAR — aggregate and correlate logs across everything | CSPM/CWPP — secure posture for Azure workloads |
+| **Scope** | Cross-platform (Azure, AWS, GCP, on-premises, M365) | Azure resources + hybrid |
+| **Alerts** | Cross-source, correlated incidents | Resource-level threat alerts |
+| **Response** | Logic Apps playbooks (SOAR) | Recommendations + auto-remediation |
+| **Cost model** | Pay-per-GB ingested | Per resource/plan enabled |
+| **Choose when** | Enterprise SOC, cross-platform threat detection | Azure security posture and compliance |
+
+> **Exam tip:** "Centralized security monitoring across Azure, AWS, and on-premises" → **Microsoft Sentinel**. "Improve Azure security score and compliance" → **Defender for Cloud**. Both can be used together.
+
+### Playbooks (SOAR)
+- Playbooks are **Azure Logic Apps** triggered by Sentinel alerts or incidents
+- Common automations: Block IP in firewall, disable compromised user, create ITSM ticket, notify Teams channel
+- Require a **Logic App Standard or Consumption** workflow connected to Sentinel
+
+### Log Analytics Integration
+- Sentinel workspace **is** a Log Analytics workspace
+- All data stored in standard Log Analytics tables (SecurityEvent, SigninLogs, AzureActivity, etc.)
+- Query with KQL — same skills as Log Analytics
+
+---
+
+## 11. Exam Scenario Cheat Sheet
 
 | Scenario | Answer |
 |---|---|
@@ -345,4 +388,8 @@ Central monitoring platform collecting metrics, logs, and traces.
 | Key Vault secrets must be recoverable 90 days after deletion | Soft Delete + Purge Protection |
 | Monitor application performance, track dependencies | Application Insights |
 | Get alerts when monthly Azure spend exceeds $5,000 | Cost Management Budget alert |
+| Centralized security monitoring across Azure, AWS, on-premises | Microsoft Sentinel |
+| Automatically block a compromised account when alert fires | Sentinel Playbook (Logic Apps) |
+| Detect anomalous user behavior across all sign-in logs | Sentinel UEBA |
+| Improve Azure secure score, fix compliance gaps | Microsoft Defender for Cloud |
 

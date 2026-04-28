@@ -268,7 +268,35 @@ VNet: 10.0.0.0/16
 
 ---
 
-## 10. Azure DNS & Private DNS
+## 10. Azure Traffic Manager
+
+### What It Is
+- DNS-based global load balancer — returns the IP of the best endpoint via DNS
+- Works with **any internet-facing endpoint** (Azure, on-premises, other clouds)
+- No proxy — traffic flows directly from client to endpoint (not through Traffic Manager)
+- Health probes check endpoint availability before returning DNS responses
+
+### Routing Methods
+
+| Method | How It Works | Use Case |
+|---|---|---|
+| **Priority** | Always route to primary; failover to secondary if primary is unhealthy | Active-passive disaster recovery |
+| **Weighted** | Distribute traffic by assigned weight (e.g., 90/10) | Gradual rollout, A/B testing, canary deployment |
+| **Performance** | Route to endpoint with lowest latency from client's location | Global app, minimize latency for users |
+| **Geographic** | Route based on client's DNS source geography | Data sovereignty, regional content, GDPR compliance |
+| **Multivalue** | Return all healthy endpoints (IPv4/IPv6 only) | Client-side load balancing, return multiple endpoints |
+| **Subnet** | Map specific IP ranges to specific endpoints | Controlled routing for office/ISP ranges |
+
+> **Exam tip:** Geographic routing is used for **data residency and compliance** — users in the EU always go to the EU endpoint regardless of performance. Performance routing is for **lowest latency**, not compliance.
+
+### Key Characteristics
+- DNS TTL controls how quickly clients pick up changes after a failover
+- Nested profiles: combine routing methods (e.g., Performance outer + Priority inner per region)
+- **Endpoint types:** Azure endpoints, external endpoints (any public IP/FQDN), nested Traffic Manager profiles
+
+---
+
+## 11. Azure DNS & Private DNS
 
 ### Azure DNS (Public)
 - Host public DNS zones in Azure
@@ -296,7 +324,7 @@ Each PaaS service needs a specific private DNS zone:
 
 ---
 
-## 11. Private Endpoints & Service Endpoints
+## 12. Private Endpoints & Service Endpoints
 
 ### Service Endpoints
 - Extends VNet identity to the PaaS service
@@ -323,7 +351,7 @@ Each PaaS service needs a specific private DNS zone:
 
 ---
 
-## 12. Azure Bastion
+## 13. Azure Bastion
 
 ### What It Is
 - Managed jump box — RDP/SSH via browser over TLS 443
@@ -342,7 +370,7 @@ Each PaaS service needs a specific private DNS zone:
 
 ---
 
-## 13. Network Watcher & Monitoring
+## 14. Network Watcher & Monitoring
 
 | Tool | Purpose |
 |---|---|
@@ -355,7 +383,7 @@ Each PaaS service needs a specific private DNS zone:
 
 ---
 
-## 14. DDoS Protection
+## 15. DDoS Protection
 
 | Plan | Protection | Use Case |
 |---|---|---|
@@ -367,7 +395,7 @@ Each PaaS service needs a specific private DNS zone:
 
 ---
 
-## 15. Routing
+## 16. Routing
 
 ### Route Priority Order
 1. System routes (auto-created)
@@ -386,13 +414,53 @@ Each PaaS service needs a specific private DNS zone:
 
 ---
 
-## 16. Networking Topology Decision Guide
+## 17. Azure Virtual WAN (vWAN)
+
+### What It Is
+Azure Virtual WAN is a **networking service that provides any-to-any connectivity at scale** — branches, VNets, and remote users connected through a Microsoft-managed hub. Replaces manual hub-spoke topologies for large enterprises.
+
+### SKUs
+
+| SKU | S2S VPN | P2S VPN | ExpressRoute | VNet-to-VNet | NVA in Hub | Use Case |
+|---|---|---|---|---|---|---|
+| **Basic** | Yes | No | No | No | No | S2S VPN only, simple branch connectivity |
+| **Standard** | Yes | Yes | Yes | Yes | Yes | Full enterprise hub, all connectivity types |
+
+### Key Concepts
+
+| Concept | Description |
+|---|---|
+| **Virtual Hub** | Microsoft-managed regional hub — replaces your own hub VNet |
+| **Hub VNet connection** | Connect spoke VNets to the hub |
+| **Branch connectivity** | S2S VPN, ExpressRoute, or SD-WAN partner devices into the hub |
+| **Any-to-any routing** | All connected branches and VNets can communicate through the hub |
+| **Secured Virtual Hub** | Virtual WAN hub with Azure Firewall deployed inside |
+
+### Virtual WAN vs Manual Hub-Spoke
+
+| | Manual Hub-Spoke | Azure Virtual WAN |
+|---|---|---|
+| Management | You manage all peerings, GWs, routing tables | Microsoft manages the hub infrastructure |
+| Scale | Limited by VNet peering limits and manual config | Thousands of branches and VNets |
+| Any-to-any | Manual UDRs required for spoke-to-spoke | Built-in |
+| SD-WAN partners | Not integrated | Native partner integrations (Barracuda, Cisco, etc.) |
+| **Choose when** | Small/medium, fine-grained control | Large enterprise, many branches, SD-WAN |
+
+> **Exam tip:** When the scenario describes **many branch offices, SD-WAN, or simplifying large-scale hub-spoke**, the answer is Azure Virtual WAN Standard. Manual hub-spoke is appropriate when you need full control over routing or have a small number of VNets.
+
+---
+
+## 18. Networking Topology Decision Guide
 
 ```
 Connectivity to on-premises?
 ├── Dev/test, low cost → VPN Gateway (Route-based, Active-Active for prod)
 ├── Production, compliance, high throughput → ExpressRoute
 └── Both → ER primary + VPN failover
+
+Hub-spoke at enterprise scale?
+├── Many branches, SD-WAN, any-to-any → Azure Virtual WAN Standard
+└── Small/medium, fine-grained control → Manual hub-spoke + Azure Firewall
 
 Multi-region web app?
 ├── HTTP/HTTPS + CDN + global failover → Azure Front Door
@@ -417,7 +485,7 @@ Remote management?
 
 ---
 
-## 17. Exam Scenario Cheat Sheet
+## 19. Exam Scenario Cheat Sheet
 
 | Scenario | Answer |
 |---|---|
@@ -427,7 +495,11 @@ Remote management?
 | Route all traffic through on-premises firewall | UDR `0.0.0.0/0` → NVA + forced tunneling |
 | Global HTTP app, lowest latency, CDN, WAF | Azure Front Door Premium |
 | Non-HTTP multi-region failover | Traffic Manager (Priority routing) |
+| EU users must stay on EU endpoint (data residency) | Traffic Manager Geographic routing |
+| Gradual rollout, send 10% traffic to new region | Traffic Manager Weighted routing |
+| Global app, route users to lowest-latency endpoint | Traffic Manager Performance routing |
 | Connect 10 spoke VNets sharing one ExpressRoute | Hub-spoke with gateway transit |
+| 50 branch offices, SD-WAN, any-to-any connectivity | Azure Virtual WAN Standard |
 | Prevent spokes from talking to each other | NSG + Azure Firewall in hub, no spoke-to-spoke peering |
 | Securely access Azure SQL from VNet, no public IP | Private Endpoint + Private DNS zone |
 | Protect all public IPs in a VNet from DDoS L3/L4 | DDoS Network Protection on VNet |
@@ -438,7 +510,7 @@ Remote management?
 
 ---
 
-## 18. Key Limits to Know
+## 20. Key Limits to Know
 
 | Resource | Limit |
 |---|---|
@@ -448,5 +520,6 @@ Remote management?
 | NSG rules per NSG | 1,000 |
 | VPN Gateway max S2S tunnels (VpnGw5) | 100 |
 | ExpressRoute Direct bandwidth options | 10 Gbps, 100 Gbps |
+| Virtual WAN hubs per vWAN | 1 per region (multiple regions supported) |
 | App Gateway v2 max instances (autoscale) | 125 |
 | Front Door PoPs | 100+ globally |

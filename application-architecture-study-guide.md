@@ -60,6 +60,52 @@ Policies apply transformations to API requests and responses:
 - `rewrite-uri` — change backend URL
 - `mock-response` — return static response (testing)
 
+### Policy Structure — Edge Cases
+
+Policy XML has four sections. `<base />` runs policies inherited from a higher scope (global → product → API → operation):
+
+```xml
+<policies>
+  <inbound>
+    <base />              <!-- run parent-scope inbound policies first -->
+    <rate-limit-by-key calls="10" renewal-period="60"
+      counter-key="@(context.Subscription.Id)" />
+  </inbound>
+  <backend>
+    <base />
+  </backend>
+  <outbound>
+    <base />
+    <set-header name="X-Processed-By" exists-action="override">
+      <value>APIM</value>
+    </set-header>
+  </outbound>
+  <on-error>
+    <base />
+    <return-response>
+      <set-status code="500" reason="Internal Error" />
+    </return-response>
+  </on-error>
+</policies>
+```
+
+> **Exam tip:** Omitting `<base />` **skips all parent-scope policies** at that point — this is a common exam distractor. Always include `<base />` unless you intentionally want to block inheritance.
+
+### Policy Scenario Quick-Reference
+
+| Scenario | Policy & Key Attributes |
+|---|---|
+| Rate limit: 10 calls/min per subscription | `rate-limit-by-key calls="10" renewal-period="60" counter-key="@(context.Subscription.Id)"` |
+| Rate limit per caller IP | `rate-limit-by-key counter-key="@(context.Request.IpAddress)"` |
+| Validate Bearer JWT, check audience claim | `validate-jwt header-name="Authorization" require-expiration-time="true"` |
+| Block all IPs except known range | `ip-filter action="allow"` with `<address-range from="..." to="..." />` |
+| Return 429 automatically on rate exceed | Built-in — `rate-limit` / `rate-limit-by-key` throw HTTP 429 |
+| Cache GET responses 5 minutes | `cache-lookup` (inbound) + `cache-store duration="300"` (outbound) |
+| Strip sensitive response header | `set-header name="X-Internal-Token" exists-action="delete"` (outbound) |
+| Transform JSON body to XML for legacy backend | `json-to-xml` policy (inbound) |
+| Forward custom correlation ID to backend | `set-header name="x-correlation-id"` with `@(context.RequestId)` (inbound) |
+| Return mock/static response without hitting backend | `mock-response` (inbound — short-circuits pipeline) |
+
 ### Self-Hosted Gateway
 - Deploy APIM gateway component on-premises or in other clouds
 - Connects back to APIM control plane in Azure
@@ -234,7 +280,64 @@ Azure App Configuration is a **centralized key-value store** for application con
 
 ---
 
-## 7. Exam Scenario Cheat Sheet
+## 7. Azure Logic Apps
+
+### What It Is
+Azure Logic Apps is a **low-code workflow automation platform** for integrating apps, data, services, and systems. Uses a visual designer with 400+ prebuilt connectors (Salesforce, SAP, Office 365, ServiceNow, etc.).
+
+### Hosting Plans
+
+| Plan | Description | Scaling | VNet Integration | Use Case |
+|---|---|---|---|---|
+| **Consumption** | Serverless, per-execution billing | Auto-scale, fully managed | No | Simple integrations, sporadic workloads, cost-sensitive |
+| **Standard** | Single-tenant, runs on App Service | Dedicated or elastic | Yes (full VNet) | Enterprise, private endpoints, on-premises connectivity |
+
+> **Exam tip:** If the scenario requires VNet integration, private endpoints, or on-premises connectivity for Logic Apps — the answer is **Standard** plan, not Consumption.
+
+### Key Concepts
+
+| Concept | Description |
+|---|---|
+| **Trigger** | What starts the workflow (HTTP request, schedule, event from connector) |
+| **Action** | A step in the workflow (call API, send email, transform data) |
+| **Connector** | Prebuilt integration to an external service (managed or custom) |
+| **Managed Identity** | Authenticate to Azure services without storing credentials |
+
+### Connectors
+
+| Type | Description | Examples |
+|---|---|---|
+| **Built-in** | Native runtime connectors, faster, lower cost | HTTP, Service Bus, Event Hubs, Azure Functions |
+| **Managed (Standard)** | Microsoft-hosted, shared infrastructure | Office 365, Salesforce, SAP, SQL Server |
+| **Enterprise** | High-volume, mission-critical | SAP, IBM MQ, IBM 3270 |
+| **On-premises** | Requires On-Premises Data Gateway | SQL Server on-prem, SharePoint on-prem, file system |
+
+### Logic Apps vs Azure Functions vs Azure Data Factory
+
+| | Logic Apps | Azure Functions | Azure Data Factory |
+|---|---|---|---|
+| Primary use | Workflow orchestration, B2B integration | Event-driven compute, custom code | Data movement and ETL pipelines |
+| Coding required | Low-code (visual designer) | Code-first (C#, Python, JS, etc.) | Low-code + code for transforms |
+| Connectors | 400+ prebuilt | Manual HTTP calls or bindings | 90+ data store connectors |
+| Long-running workflows | Yes (stateful) | Not natively (Durable Functions for this) | Yes (pipeline runs) |
+| B2B/EDI support | Yes (AS2, X12, EDIFACT) | No | No |
+| **Choose when** | Enterprise integration, B2B, many SaaS systems | Custom logic, compute-intensive, event processing | Data pipelines, ETL/ELT, data lake ingestion |
+
+> **Exam tip:** When a scenario involves integrating enterprise SaaS systems (e.g., Salesforce → SAP), automating business processes, or B2B EDI messaging — Logic Apps is the answer. When the scenario requires custom code or compute — use Functions. When it involves bulk data movement between stores — use ADF.
+
+### Common Patterns
+
+| Pattern | Logic Apps Feature |
+|---|---|
+| Scheduled data sync | Recurrence trigger |
+| React to new blob, process and route | Azure Blob Storage trigger → condition → actions |
+| B2B partner messaging (EDI) | Integration Account + AS2/X12/EDIFACT connectors |
+| Call a Function when Logic App can't handle the logic | Azure Functions action inside a Logic App |
+| Retry on failure | Built-in retry policies on each action |
+
+---
+
+## 8. Exam Scenario Cheat Sheet
 
 | Scenario | Answer |
 |---|---|
@@ -253,3 +356,8 @@ Azure App Configuration is a **centralized key-value store** for application con
 | Microservices, need full Kubernetes control | AKS |
 | Microservices, team doesn't know Kubernetes | Azure Container Apps |
 | Dev/test, run single container quickly | Azure Container Instances |
+| Integrate Salesforce + SAP, no custom code | Azure Logic Apps (Consumption) |
+| B2B EDI messaging with trading partner | Azure Logic Apps + Integration Account |
+| Logic App needs private endpoint, VNet integration | Logic Apps Standard plan |
+| Automate business workflow, 400+ SaaS connectors | Azure Logic Apps |
+| Logic App needs custom compute logic | Azure Functions action within Logic App |
