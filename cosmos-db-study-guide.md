@@ -26,7 +26,7 @@ Azure Cosmos DB is a **fully managed, globally distributed, multi-model NoSQL da
 |---|---|---|
 | **NoSQL (Core)** | New cloud-native apps, JSON documents | Native Cosmos SDK, SQL-like query |
 | **MongoDB** | Migrating existing MongoDB apps | MongoDB wire protocol |
-| **Cassandra** | Migrating Apache Cassandra apps | CQL (Cassandra Query Language) |
+| **Cassandra** | Migrating Apache Cassandra apps | Cassandra Query Language (CQL) |
 | **Gremlin** | Graph data — social networks, recommendations, fraud detection | Gremlin (Apache TinkerPop) |
 | **Table** | Migrating Azure Table Storage apps needing global distribution | OData/REST (Azure Table SDK compatible) |
 | **PostgreSQL (Citus)** | Distributed PostgreSQL, analytical + transactional | PostgreSQL wire protocol |
@@ -180,7 +180,7 @@ A good partition key must:
 ## 8. Cosmos DB Change Feed
 
 - An ordered, append-only log of all changes (inserts and updates) to a container
-- Enables event-driven patterns, real-time analytics, CDC (change data capture)
+- Enables event-driven patterns, real-time analytics, Change Data Capture (CDC)
 - **Not supported:** Deletes (workaround: soft delete with TTL)
 - Consumed via: Azure Functions trigger, Change Feed Processor SDK, Azure Stream Analytics
 - **Use cases:** Real-time dashboards, downstream sync to data warehouse, event sourcing

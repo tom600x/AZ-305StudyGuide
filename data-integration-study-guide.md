@@ -5,7 +5,7 @@ The exam tests your ability to:
 - Choose between Azure Data Factory, Synapse Analytics, and Databricks
 - Understand when to use Stream Analytics for real-time data
 - Design data pipelines (batch vs streaming)
-- Select the right tool for ETL/ELT, big data analytics, and reporting
+- Select the right tool for Extract, Transform, Load (ETL)/Extract, Load, Transform (ELT), big data analytics, and reporting
 
 ---
 
@@ -77,7 +77,7 @@ Azure Synapse is an **enterprise analytics service** that combines big data and 
 | **Serverless SQL Pool** | Query data in Data Lake with SQL, pay per TB scanned | Ad-hoc queries, data exploration, no loading needed |
 | **Apache Spark Pools** | Managed Spark clusters for big data processing | Machine learning, complex transformations, Delta Lake |
 | **Synapse Pipelines** | Fully ADF-compatible pipelines built into Synapse | Data integration within Synapse workspace |
-| **Synapse Link** | Zero-ETL analytical access to operational data in Cosmos DB, SQL | HTAP (Hybrid Transactional/Analytical Processing) |
+| **Synapse Link** | Zero-ETL analytical access to operational data in Cosmos DB, SQL | Hybrid Transactional and Analytical Processing (HTAP) |
 
 ### Dedicated SQL Pool (formerly SQL DW)
 
@@ -86,7 +86,7 @@ Azure Synapse is an **enterprise analytics service** that combines big data and 
   - **Hash:** Distributes rows by a specified column — best for large fact tables
   - **Round Robin:** Distributes rows evenly — best for staging tables, no clear join key
   - **Replicated:** Copies entire table to each node — best for small dimension tables
-- **DWU (Data Warehouse Units):** Scaling unit — scale up/down or pause to save cost
+- **Data Warehouse Unit (DWU):** Scaling unit — scale up/down or pause to save cost
 - **Control table vs Distribution:** Design for minimizing data movement during joins
 
 ### Serverless SQL Pool
@@ -116,7 +116,7 @@ Azure Databricks is a **managed Apache Spark platform** for large-scale data eng
 | **Cluster** | Spark compute (all-purpose or job clusters) |
 | **Notebook** | Interactive code (Python, R, Scala, SQL) |
 | **Job** | Scheduled automated execution of notebooks/JARs |
-| **Delta Lake** | ACID-compliant storage layer on top of Parquet files |
+| **Delta Lake** | Atomicity, Consistency, Isolation, Durability (ACID)-compliant storage layer on top of Parquet files |
 
 ### Delta Lake
 - Adds ACID transactions to data lake storage (Azure Data Lake Storage Gen2)

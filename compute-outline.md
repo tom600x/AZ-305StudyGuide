@@ -52,10 +52,10 @@
 ### 4. Azure Kubernetes Service (AKS)
 - Managed Kubernetes control plane
 - Node pools: System pool (critical pods) + User pools (workloads)
-- **Scaling:** Horizontal Pod Autoscaler (HPA), Cluster Autoscaler, KEDA
+- **Scaling:** Horizontal Pod Autoscaler (HPA), Cluster Autoscaler, Kubernetes Event-Driven Autoscaling (KEDA)
 - Networking: Kubenet vs Azure CNI (Azure CNI for VNet integration)
 - **Azure CNI Overlay:** Pod IPs from overlay, nodes use VNet IPs — saves IP space
-- Security: Azure AD integration, RBAC, Azure Policy for AKS, workload identity
+- Security: Azure AD integration, Role-Based Access Control (RBAC), Azure Policy for AKS, workload identity
 - Storage: Azure Disk (RWO), Azure Files (RWX), Azure Container Storage
 
 ### 5. Azure Container Instances (ACI)

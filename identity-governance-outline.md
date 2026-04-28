@@ -35,7 +35,7 @@
 | | Azure AD B2B | Azure AD B2C |
 |---|---|---|
 | **Purpose** | Partner/vendor collaboration | Customer identity (external users) |
-| **Identity source** | Guest users from any IdP | Local accounts + social IdPs (Google, Facebook) |
+| **Identity source** | Guest users from any Identity Provider (IdP) | Local accounts + social IdPs (Google, Facebook) |
 | **Tenant** | Invited into your tenant | Separate B2C tenant |
 | **Use Case** | Share internal apps with partners | Consumer-facing apps |
 
@@ -102,7 +102,7 @@ Policies that enforce access controls based on signals:
 
 ---
 
-## 3. Azure RBAC
+## 3. Azure Role-Based Access Control (RBAC)
 
 ### Built-In Roles
 
@@ -236,7 +236,7 @@ Root Management Group
 - Key Vault stores the key that encrypts Azure resource data
 - Supported services: Storage, Disk Encryption, SQL, Cosmos DB, etc.
 - You control key rotation, expiration, and revocation
-- Key Vault Managed HSM for highest security requirements (FIPS 140-2 Level 3)
+- Key Vault Managed HSM for highest security requirements (Federal Information Processing Standard (FIPS) 140-2 Level 3)
 
 ---
 

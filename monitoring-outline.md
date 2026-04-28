@@ -18,7 +18,7 @@
 
 #### Logs (Azure Monitor Logs / Log Analytics)
 - Stored in **Log Analytics workspace** (Azure Data Explorer under the hood)
-- Query with **KQL (Kusto Query Language)** — exam may show basic KQL
+- Query with **Kusto Query Language (KQL)** — exam may show basic KQL
 - Retention: 30 days default, up to 730 days (longer via archive)
 
 ### 2. Log Analytics Workspace
@@ -41,7 +41,7 @@
 - **Action groups:** Reusable notification + action sets (email, SMS, webhook, Logic App, runbook, ITSM)
 
 ### 5. Application Insights
-- APM (Application Performance Monitoring) for web apps
+- Application Performance Monitoring (APM) for web apps
 - Tracks: requests, dependencies, exceptions, custom events, traces
 - **Smart detection:** Auto-detect anomalies in failure rate, performance
 - **Application Map:** Visual dependency topology

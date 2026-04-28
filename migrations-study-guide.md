@@ -79,7 +79,7 @@ Azure Migrate is the **central hub for discovery, assessment, and migration** of
 | Type | Description |
 |---|---|
 | **Agentless** | Uses vCenter APIs to collect data, no agent needed | Quick assessment, minimal setup |
-| **Agent-based** | Install MMA + Dependency agent on each VM | Detailed process-level mapping |
+| **Agent-based** | Install Microsoft Monitoring Agent (MMA) + Dependency agent on each VM | Detailed process-level mapping |
 
 > **Exam tip:** Agentless dependency analysis does not require installing agents — it uses hypervisor-level data collection. Agent-based gives more detail (process names, port numbers).
 
@@ -120,8 +120,8 @@ Azure Database Migration Service automates **database migration** from on-premis
 |---|---|
 | Azure DMS | Automated, validated migration with minimal downtime |
 | Backup/Restore | Simple offline migration, full control |
-| Log Shipping | Manual CDC for SQL Server → SQL MI |
-| SSMA (SQL Server Migration Assistant) | Schema + data migration for non-SQL sources (Oracle, MySQL) |
+| Log Shipping | Manual Change Data Capture (CDC) for SQL Server → SQL MI |
+| SQL Server Migration Assistant (SSMA) | Schema + data migration for non-SQL sources (Oracle, MySQL) |
 
 ---
 
@@ -138,7 +138,7 @@ Azure Database Migration Service automates **database migration** from on-premis
 
 ### Physical Servers
 - Uses Mobility Service agent installed on each server
-- Works for bare metal, other hypervisors (Xen, KVM), cloud VMs
+- Works for bare metal, other hypervisors (Xen, Kernel-based Virtual Machine (KVM)), cloud VMs
 
 ### Migration Process (General)
 1. **Discover** — Deploy appliance, discover VMs

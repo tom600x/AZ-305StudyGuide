@@ -13,7 +13,7 @@ Networking is embedded in almost every scenario. The exam tests your ability to:
 ## 1. Virtual Networks (VNets)
 
 ### Core Concepts
-- **Address space:** CIDR blocks assigned at creation, can add more later
+- **Address space:** Classless Inter-Domain Routing (CIDR) blocks assigned at creation, can add more later
 - **Subnets:** Subdivide the VNet; each resource lives in a subnet
 - **Region-bound:** A VNet exists in one region — connect across regions via peering or VPN
 - **Subscription-bound:** Can peer across subscriptions
@@ -45,7 +45,7 @@ VNet: 10.0.0.0/16
 
 | Feature | NSG | Azure Firewall |
 |---|---|---|
-| Layer | L4 (port/IP) | L4 + L7 (FQDN, URL, TLS inspection) |
+| Layer | L4 (port/IP) | L4 + L7 (Fully Qualified Domain Name (FQDN), URL, TLS inspection) |
 | Scope | Subnet/NIC | Centralized hub |
 | FQDN filtering | No | Yes |
 | Threat intelligence | No | Yes |
@@ -68,11 +68,11 @@ VNet: 10.0.0.0/16
 | SKU | Features | Use Case |
 |---|---|---|
 | **Standard** | FQDN filtering, NAT, network rules, threat intel | Most enterprise workloads |
-| **Premium** | + TLS inspection, IDPS, URL categories, web categories | Zero-trust, compliance-heavy |
+| **Premium** | + TLS inspection, Intrusion Detection and Prevention System (IDPS), URL categories, web categories | Zero-trust, compliance-heavy |
 | **Basic** | Limited policy, no threat intel | SMB / dev environments |
 
 ### Key Capabilities
-- **DNAT rules:** Inbound internet traffic → internal IP (replaces inbound NAT rules)
+- **Destination Network Address Translation (DNAT) rules:** Inbound internet traffic → internal IP (replaces inbound NAT rules)
 - **Network rules:** IP/port/protocol filtering
 - **Application rules:** FQDN/URL-based (HTTP/HTTPS)
 - **Threat intelligence:** Block known malicious IPs/FQDNs
@@ -95,7 +95,7 @@ VNet: 10.0.0.0/16
 
 ### Key Rules
 - Peering is **non-transitive** — VNet A→B and B→C does NOT give A→C
-- To enable transit routing: use **Azure Firewall** or **NVA** in hub, enable `Use Remote Gateways` / `Allow Gateway Transit`
+- To enable transit routing: use **Azure Firewall** or **Network Virtual Appliance (NVA)** in hub, enable `Use Remote Gateways` / `Allow Gateway Transit`
 - Peering is **bidirectional** but configured independently each direction
 - **No overlapping address spaces** allowed
 
@@ -131,12 +131,12 @@ VNet: 10.0.0.0/16
 | **AZ variants** | Same + zone redundancy | Same | HA zone protection |
 
 ### VPN Types
-- **Route-based VPN:** Supports IKEv2, point-to-site, dynamic routing — **use for new deployments**
+- **Route-based VPN:** Supports Internet Key Exchange version 2 (IKEv2), point-to-site, dynamic routing — **use for new deployments**
 - **Policy-based VPN:** Static routing, IKEv1 only, limited compatibility — **legacy only**
 
 ### Connection Types
 - **Site-to-Site (S2S):** On-premises ↔ Azure over IPsec/IKE
-- **Point-to-Site (P2S):** Individual device → Azure (OpenVPN, SSTP, IKEv2)
+- **Point-to-Site (P2S):** Individual device → Azure (OpenVPN, Secure Socket Tunneling Protocol (SSTP), IKEv2)
 - **VNet-to-VNet:** Azure VNet ↔ Azure VNet (use peering if same region is simpler)
 
 ### High Availability
@@ -153,8 +153,8 @@ VNet: 10.0.0.0/16
 |---|---|---|---|
 | **CloudExchange Co-location** | Colocation provider's switch | Very low | High |
 | **Point-to-Point Ethernet** | Dedicated WAN link | Low | High |
-| **Any-to-Any (IPVPN)** | MPLS/VPN network integration | Variable | Provider SLA |
-| **ExpressRoute Direct** | Direct 10/100 Gbps to MSEE | Lowest | Highest |
+| **Any-to-Any (IPVPN)** | Multiprotocol Label Switching (MPLS)/VPN network integration | Variable | Provider SLA |
+| **ExpressRoute Direct** | Direct 10/100 Gbps to Microsoft Enterprise Edge (MSEE) | Lowest | Highest |
 
 ### Circuit SKUs
 
@@ -272,7 +272,7 @@ VNet: 10.0.0.0/16
 
 ### Azure DNS (Public)
 - Host public DNS zones in Azure
-- Integrated with RBAC, Azure Monitor
+- Integrated with Role-Based Access Control (RBAC), Azure Monitor
 - No DNSSEC support (as of 2026)
 
 ### Azure Private DNS
@@ -372,14 +372,14 @@ Each PaaS service needs a specific private DNS zone:
 ### Route Priority Order
 1. System routes (auto-created)
 2. User-defined routes (UDRs)
-3. BGP routes (from on-premises via VPN/ER)
+3. Border Gateway Protocol (BGP) routes (from on-premises via VPN/ER)
 
 ### User-Defined Routes (UDRs)
 - Override system routes
 - Force traffic through NVA or Azure Firewall
 - **Forced tunneling:** UDR with `0.0.0.0/0` → NVA/Firewall → on-premises
 
-### BGP
+### Border Gateway Protocol (BGP)
 - Dynamic routing protocol used with VPN Gateway (Route-based) and ExpressRoute
 - Enables automatic route propagation from on-premises
 - Required for ExpressRoute

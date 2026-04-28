@@ -71,7 +71,7 @@ The exam tests your ability to **choose the right storage service and the right 
 - Policies run daily, defined in JSON rules
 - **Exam tip:** Use lifecycle policies to minimize costs without manual intervention
 
-### Immutable Storage (WORM)
+### Immutable Storage — Write Once, Read Many (WORM)
 - **Time-based retention:** Blob locked for a defined period
 - **Legal hold:** Indefinite hold for litigation
 - **Choose when:** Financial records, HIPAA, SEC 17a-4 compliance
@@ -190,7 +190,7 @@ Do you need zone protection in the primary region too?
 
 | Method | Best For |
 |---|---|
-| **Azure RBAC** | Fine-grained, identity-based, auditable — preferred |
+| **Azure Role-Based Access Control (RBAC)** | Fine-grained, identity-based, auditable — preferred |
 | **Shared Access Signature (SAS)** | Delegated, time-limited access for external users |
 | **Storage Account Keys** | Full access, avoid in production — use managed identity instead |
 | **Anonymous public access** | Static websites, public blobs only |
@@ -211,10 +211,10 @@ Do you need zone protection in the primary region too?
 ## 9. Data Lake Storage Gen2
 
 - Built on **Blob Storage** with hierarchical namespace enabled
-- Supports **POSIX-style ACLs**
+- Supports **Portable Operating System Interface (POSIX)-style ACLs**
 - Optimized for analytics (Hadoop, Spark, Synapse, Databricks)
 - **Choose when:** Big data analytics, data lakehouse architectures
-- **vs. Blob Storage without HNS:** HNS enables true directory semantics and atomic rename
+- **vs. Blob Storage without Hierarchical Namespace (HNS):** HNS enables true directory semantics and atomic rename
 
 ---
 

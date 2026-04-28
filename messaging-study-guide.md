@@ -143,7 +143,7 @@ Real-time event routing / reactive architecture?
 | Dead-letter | No | Yes |
 | Duplicate detection | No | Yes |
 | Transactions | No | Yes |
-| Auth | Storage Account Key, SAS, RBAC | SAS, RBAC, Managed Identity |
+| Auth | Storage Account Key, Shared Access Signature (SAS), Role-Based Access Control (RBAC) | SAS, RBAC, Managed Identity |
 | Cost | Very low | Higher |
 | **Choose when** | Simple decoupling, massive backlog, audit logs | Reliable delivery, ordering, enterprise integration |
 

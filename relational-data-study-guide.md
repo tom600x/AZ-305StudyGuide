@@ -64,7 +64,7 @@ Open-source preference?
 | Service Tier | HA Replicas | Read Scale-Out | Use Case |
 |---|---|---|---|
 | **General Purpose** | 1 (Log-based HA) | No | Most business workloads, balanced price/performance |
-| **Business Critical** | 3 (Always On AG) | Yes (free read replica) | High IOPS, low latency, in-memory OLTP |
+| **Business Critical** | 3 (Always On AG) | Yes (free read replica) | High IOPS, low latency, in-memory Online Transaction Processing (OLTP) |
 | **Hyperscale** | 1–5 named replicas | Yes (up to 30 replicas) | Large databases (100 TB+), fast backup/restore |
 
 ### Purchasing Model Comparison

@@ -93,8 +93,8 @@ Azure Cache for Redis is a **managed in-memory key-value store** based on the Re
 
 | Option | Description | Use Case |
 |---|---|---|
-| **RDB (Redis Database)** | Point-in-time snapshot at configurable intervals | Lower overhead, acceptable data loss on failure |
-| **AOF (Append Only File)** | Log every write operation | Near-zero data loss, higher disk I/O |
+| **Redis Database (RDB)** | Point-in-time snapshot at configurable intervals | Lower overhead, acceptable data loss on failure |
+| **Append Only File (AOF)** | Log every write operation | Near-zero data loss, higher disk I/O |
 
 ### Common Use Cases
 
@@ -209,7 +209,7 @@ Azure App Configuration is a **centralized key-value store** for application con
 |---|---|---|
 | Kubernetes expertise needed | Yes | No |
 | Custom networking / Ingress | Full control | Managed Dapr + Envoy |
-| Auto-scaling | KEDA, HPA, Cluster Autoscaler | Built-in KEDA |
+| Auto-scaling | Kubernetes Event-Driven Autoscaling (KEDA), Horizontal Pod Autoscaler (HPA), Cluster Autoscaler | Built-in KEDA |
 | Cost | Pay for nodes | Pay per vCPU/memory second |
 | Sidecar pattern | Manual | Built-in (Dapr) |
 
