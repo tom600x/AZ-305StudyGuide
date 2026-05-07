@@ -240,3 +240,37 @@ Need to move data to Azure?
 | On-premises app using SQL Agent, linked servers | Migrate to Azure SQL Managed Instance |
 | Assess migration cost and right-sizing | Azure Migrate performance-based assessment |
 | Migrate MySQL database, near-zero downtime | Azure DMS online migration to Azure DB for MySQL |
+
+---
+
+## 9. Migration Exam Traps
+
+### 1. Choosing rehost when the scenario clearly requires platform modernization
+- **Trap:** Lift-and-shift minimizes change, so it sounds safest
+- **Better default:** Refactor, rearchitect, rebuild, or replace when the requirement targets managed services, elasticity, or cloud-native patterns
+
+### 2. Skipping assessment and dependency analysis
+- **Trap:** The migration tool choice seems obvious
+- **Better default:** AZ-305 often expects Azure Migrate assessment and dependency analysis before migration decisions
+
+### 3. Choosing offline transfer when the network is good enough for online tools
+- **Trap:** Data Box sounds robust for any large migration
+- **Better default:** AzCopy or Storage Mover when bandwidth is sufficient and the data volume does not require offline shipping
+
+### 4. Choosing SQL Database when SQL Server compatibility requirements are high
+- **Trap:** SQL Database is the flagship PaaS option
+- **Better default:** SQL Managed Instance when SQL Agent, linked servers, or near-full SQL Server compatibility are needed
+
+### 5. Treating DMS as the answer for every migration type
+- **Trap:** DMS is a named migration service, so it appears broadly applicable
+- **Better default:** DMS is for database migration, not VM migration, file migration, or app rehosting
+
+### Rapid Elimination Rules
+
+| Requirement | Eliminate First |
+|---|---|
+| Discover and assess on-premises servers | DMS-only answers |
+| Existing SQL Agent or linked servers | Azure SQL Database-first answers |
+| 200 TB with poor connectivity | Internet transfer-only answers |
+| Near-zero downtime database migration | Offline-only migration modes |
+| File migration, not database migration | DMS-first answers |

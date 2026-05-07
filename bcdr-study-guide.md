@@ -231,3 +231,66 @@ Azure VMs, SQL on Azure VMs, SAP HANA on Azure VMs, Azure Files, Azure Blobs, Az
 - Availability Zones ≠ regions — AZs protect against datacenter failure, not regional failure
 - Site Recovery is the go-to answer for VM-level DR across regions
 - **Centralized backup monitoring across subscriptions** = Azure Backup Center
+
+---
+
+## Gap-Closing Review Priorities
+
+The most common AZ-305 mistakes in this domain come from mixing up backup, high availability, and disaster recovery.
+
+### High-Yield Decision Rules
+
+| Requirement | Preferred Direction | Common Mistake |
+|---|---|---|
+| Low downtime in one region | High availability design | Choosing backup when the app must stay online |
+| Regional outage protection | Disaster recovery design | Choosing Availability Zones, which do not protect against region failure |
+| Recover deleted or corrupted data | Backup and restore | Choosing geo-replication alone |
+| Same app endpoint after SQL failover | Auto-failover groups | Choosing active geo-replication without considering connection string handling |
+| Test DR safely | ASR test failover or service-specific test process | Skipping validation entirely |
+
+### Recommendations
+
+1. Start every BCDR question by identifying the required **RPO** and **RTO**.
+2. Separate data protection from application continuity. The exam often expects both.
+3. Review zone redundancy and geo-redundancy together so you do not confuse datacenter failure with regional failure.
+4. Practice answering what happens to the application endpoint, not just the data.
+
+### Practice Prompts
+
+1. A database must survive accidental deletion and support point-in-time restore. Why is backup required even if geo-replication exists?
+2. A two-region app must fail over quickly with minimal operational steps. Which parts need active-active, and which can remain active-passive?
+3. A workload requires near-zero data loss across regions. Why might multi-region writes be required for Cosmos DB instead of single-write-region failover?
+
+---
+
+## BCDR Exam Traps
+
+### 1. Treating backup as disaster recovery
+- **Trap:** Backup protects data, so it feels like it solves outages too
+- **Better default:** Backup restores data; DR restores service availability and operations
+
+### 2. Choosing Availability Zones for regional disaster protection
+- **Trap:** Zones improve availability, so they seem like enough for every failure case
+- **Better default:** Zones protect against datacenter failure inside one region, not full regional outages
+
+### 3. Choosing geo-replication when point-in-time restore is required
+- **Trap:** Geo-replication sounds like complete protection
+- **Better default:** Restore scenarios still require backup/PITR or LTR depending on retention needs
+
+### 4. Ignoring application endpoint behavior after failover
+- **Trap:** The data layer survives, so the architecture appears complete
+- **Better default:** Check whether the app also needs listener endpoints, DNS failover, or global traffic routing
+
+### 5. Skipping DR testing in the design
+- **Trap:** Replication looks sufficient on paper
+- **Better default:** AZ-305 often expects ASR test failover or another safe validation path
+
+### Rapid Elimination Rules
+
+| Requirement | Eliminate First |
+|---|---|
+| Recover deleted data or corruption | Geo-replication-only answers |
+| Regional outage protection | Availability Zones-only answers |
+| Same SQL connection string after failover | Active geo-replication-only answers |
+| VM-level cross-region recovery | Backup-only answers |
+| Need to validate DR safely | Designs with no test failover path |

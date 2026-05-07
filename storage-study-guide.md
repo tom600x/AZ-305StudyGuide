@@ -276,3 +276,37 @@ What are you storing?
 | Max queue message size | 64 KB |
 | Archive rehydration time | Up to 15 hours (standard priority) or 1 hour (high priority) |
 | SAS token max expiry | No hard limit, but best practice ≤ 1 hour |
+
+---
+
+## 13. Storage Exam Traps
+
+### 1. Choosing geo-redundancy when data residency forbids cross-region copies
+- **Trap:** GRS and GZRS sound safer, so they look like the best default
+- **Better default:** LRS or ZRS when data must remain in a single region or country
+
+### 2. Choosing Archive tier for data that must be accessed quickly
+- **Trap:** Archive is cheapest
+- **Better default:** Cool or Hot when retrieval time matters; Archive has rehydration delay and retrieval cost
+
+### 3. Choosing Azure Files when the scenario is really object storage or analytics lake storage
+- **Trap:** Files sounds like a general-purpose storage answer
+- **Better default:** Blob Storage or ADLS Gen2 depending on object semantics and analytics needs
+
+### 4. Confusing SAS types and over-granting access
+- **Trap:** Any SAS token seems good enough
+- **Better default:** Prefer User Delegation SAS when possible and scope permissions tightly
+
+### 5. Choosing Service Endpoints when private IP-based access is required
+- **Trap:** Service Endpoints secure access to storage from a VNet
+- **Better default:** Private Endpoint when the requirement explicitly says no public endpoint or private IP access
+
+### Rapid Elimination Rules
+
+| Requirement | Eliminate First |
+|---|---|
+| Data must stay in one geography | GRS and GZRS answers |
+| Lowest cost but retrieval can wait hours | Hot-tier answers |
+| NFS file share for Linux app | Blob-only answers |
+| Spark or lake analytics data | Azure Files answers |
+| External partner needs temporary blob access | Account key sharing answers |

@@ -209,3 +209,37 @@ Azure Stream Analytics is a **real-time event processing and analytics service**
 | ACID transactions and time travel on data lake | Delta Lake |
 | Cosmos DB operational data analyzed without impacting app | Synapse Link + Synapse Analytics |
 | React to blob file arrival, start pipeline | ADF Event-Based Trigger |
+
+---
+
+## 8. Data Integration Exam Traps
+
+### 1. Choosing ADF when the workload is real-time stream processing
+- **Trap:** ADF is the default Azure data tool in many minds
+- **Better default:** Stream Analytics for streaming queries, windows, and real-time event processing
+
+### 2. Choosing Databricks for simple orchestration or data movement
+- **Trap:** Databricks is powerful, so it feels future-proof
+- **Better default:** ADF when the primary requirement is orchestration, copy, triggers, and managed pipeline execution
+
+### 3. Choosing Synapse Dedicated SQL Pool for occasional file queries
+- **Trap:** Dedicated sounds more enterprise-ready
+- **Better default:** Serverless SQL Pool when the workload is ad hoc analytics over lake files without persistent compute
+
+### 4. Ignoring the right Integration Runtime type
+- **Trap:** ADF is correct, but connectivity fails because the wrong IR was chosen
+- **Better default:** Self-Hosted IR for on-premises/private sources and Azure-SSIS IR for existing SSIS packages
+
+### 5. Treating every analytics scenario as a single-tool solution
+- **Trap:** One service appears to cover ingestion, transform, and analytics
+- **Better default:** AZ-305 often expects a pipeline of tools, such as ADF plus ADLS plus Synapse or Databricks
+
+### Rapid Elimination Rules
+
+| Requirement | Eliminate First |
+|---|---|
+| Real-time event windows or stream joins | ADF-only answers |
+| Existing SSIS packages | Non-SSIS IR answers |
+| Query data lake files without provisioning DW compute | Dedicated SQL Pool-only answers |
+| Mostly orchestration and scheduled movement | Databricks-first answers |
+| Private on-premises source connectivity | Azure IR-only answers |

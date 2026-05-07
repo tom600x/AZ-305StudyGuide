@@ -339,3 +339,37 @@ Azure Arc **projects non-Azure resources into Azure Resource Manager**, enabling
 - AKS with Azure CNI is required for VNet-integrated pods
 - Durable Functions for **long-running, stateful workflows** in serverless
 - **On-premises / multi-cloud management via Azure** = Azure Arc (policy, monitoring, Defender)
+
+---
+
+## 10. Compute Exam Traps
+
+### 1. Choosing VMs for every migrated app
+- **Trap:** Lift-and-shift is familiar and seems safest
+- **Better default:** Use PaaS or serverless when the scenario values less management, faster scaling, or built-in deployment features
+
+### 2. Choosing AKS when orchestration requirements are light
+- **Trap:** AKS is the most capable compute platform in the list
+- **Better default:** Container Apps, App Service, or ACI when cluster-level control is unnecessary
+
+### 3. Choosing Functions for long-running or VNet-heavy workloads without checking the plan
+- **Trap:** Functions sound right for all event-driven scenarios
+- **Better default:** Premium or Durable Functions when you need VNet support, no cold starts, or orchestration
+
+### 4. Ignoring App Service plan tier limitations
+- **Trap:** App Service is correct, but the selected tier lacks slots, autoscale, or isolation
+- **Better default:** Match the feature to the tier, especially for deployment slots and ASE isolation
+
+### 5. Forgetting Azure Arc for hybrid management questions
+- **Trap:** The question is about servers or Kubernetes running outside Azure, so Azure-native compute looks wrong
+- **Better default:** Azure Arc when the real requirement is governance, monitoring, or Defender across on-premises and multi-cloud
+
+### Rapid Elimination Rules
+
+| Requirement | Eliminate First |
+|---|---|
+| Minimal ops for a web app | VM-first answers |
+| Full Kubernetes control not required | AKS-first answers |
+| Scale to zero and event-driven execution | Always-on VM or AKS answers |
+| On-premises servers managed with Azure Policy | Native Azure-only compute answers |
+| Blue-green or deployment slots | App Service Basic answers |

@@ -142,6 +142,79 @@ Root Management Group
 | **Activation** | User requests role, may require MFA + approval |
 | **Access review** | Periodic review of who has role |
 
+### RBAC Building Blocks
+
+Every Azure RBAC design question has three parts:
+
+| Building Block | Question to Ask |
+|---|---|
+| **Security principal** | Who needs access: user, group, service principal, or managed identity? |
+| **Role definition** | What permissions are required: read, modify resources, manage access, or data access? |
+| **Scope** | Where should access apply: management group, subscription, resource group, or resource? |
+
+> **Exam tip:** AZ-305 usually rewards the most restrictive scope and the least-privileged built-in role that still satisfies the requirement.
+
+### Management Plane vs Data Plane
+
+This is one of the most common RBAC exam traps.
+
+| Plane | What It Controls | Examples |
+|---|---|---|
+| **Management plane** | Managing Azure resources through Azure Resource Manager | Create VM, delete storage account, change Key Vault settings |
+| **Data plane** | Accessing the data inside a resource | Read blob contents, read Key Vault secrets, query queue messages |
+
+**Decision rule:**
+- If the question says **manage the resource**, think Azure management-plane roles like Owner, Contributor, or Reader.
+- If the question says **read or write the contents inside the resource**, verify whether a **data-plane RBAC role** is required.
+
+### Built-In Role Traps
+
+| Requirement | Best Fit | Common Wrong Answer |
+|---|---|---|
+| Full control including assigning roles | **Owner** | Contributor |
+| Manage resources but not grant access | **Contributor** | Owner |
+| Assign roles without changing resources | **User Access Administrator** | Contributor |
+| View resources only | **Reader** | Contributor |
+
+> **Exam tip:** `Contributor` cannot grant access. If the scenario includes creating role assignments, you need `Owner` or `User Access Administrator`.
+
+### Data-Plane RBAC Scenarios
+
+| Service | Requirement | Likely Direction |
+|---|---|---|
+| **Key Vault** | App reads secrets without stored credentials | Managed identity + Key Vault RBAC data access role |
+| **Storage** | User reads blobs but should not manage the storage account | Storage data-plane RBAC role, not Contributor on the account |
+| **Storage** | External short-term access | SAS, not broad RBAC assignment |
+| **Key Vault** | Admin configures purge protection or networking | Management-plane role on the vault |
+
+### AKS Authorization Exam Note
+
+- **Azure RBAC** controls access to the AKS resource in Azure
+- **Kubernetes RBAC** controls actions inside the Kubernetes cluster
+- Some scenarios require both: Azure RBAC for cluster access path and Kubernetes RBAC for in-cluster permissions
+
+### RBAC Decision Checklist
+
+Before answering an RBAC question, check these in order:
+
+1. Who needs access: human, app, workload, or external user?
+2. Is the requirement control-plane or data-plane?
+3. What is the smallest scope that works?
+4. Is a built-in role sufficient, or is a custom role implied?
+5. Should standing access be replaced with PIM eligible access?
+
+### RBAC Scenario Quick Reference
+
+| Scenario | Answer |
+|---|---|
+| App on App Service needs Key Vault access without secrets | System-assigned managed identity + Key Vault RBAC |
+| Several VMs need the same permissions to Storage and Key Vault | User-assigned managed identity |
+| Operations team must restart VMs but not assign roles | Contributor at resource group scope |
+| Security team must manage role assignments only | User Access Administrator |
+| Auditor needs to view resources across one subscription | Reader at subscription scope |
+| Team needs read access to blob contents, not account management | Storage Blob Data Reader |
+| Admin rights should require approval and MFA when needed | PIM eligible assignment |
+
 ---
 
 ## 4. Identity Governance
@@ -392,4 +465,38 @@ Microsoft Sentinel is a cloud-native **SIEM (Security Information and Event Mana
 | Automatically block a compromised account when alert fires | Sentinel Playbook (Logic Apps) |
 | Detect anomalous user behavior across all sign-in logs | Sentinel UEBA |
 | Improve Azure secure score, fix compliance gaps | Microsoft Defender for Cloud |
+
+---
+
+## 12. Identity and Governance Exam Traps
+
+### 1. Choosing service principals with secrets when managed identity is available
+- **Trap:** Service principals are familiar and broadly applicable
+- **Better default:** Managed identity when the workload is an Azure resource accessing another Azure service
+
+### 2. Confusing Azure AD B2B with Azure AD B2C
+- **Trap:** Both handle external identities
+- **Better default:** B2B for partners and guest access to your tenant; B2C for customer-facing identity
+
+### 3. Choosing RBAC when governance enforcement is required
+- **Trap:** RBAC controls access, so it feels like the whole answer
+- **Better default:** Azure Policy for compliance and enforcement; RBAC for authorization
+
+### 4. Choosing Key Vault without checking the access model or recovery settings
+- **Trap:** Key Vault is correct, but the design omits RBAC, soft delete, or purge protection
+- **Better default:** Match the access model and data protection settings to the requirement
+
+### 5. Using Sentinel when the requirement is posture management
+- **Trap:** Sentinel sounds like the broadest security answer
+- **Better default:** Defender for Cloud for posture, recommendations, and secure score; Sentinel for SIEM/SOAR and investigation
+
+### Rapid Elimination Rules
+
+| Requirement | Eliminate First |
+|---|---|
+| Azure resource needs secretless access to Key Vault | Secret-based service principal answers |
+| Partner access to internal apps | B2C answers |
+| Customer sign-in with social identity providers | B2B answers |
+| Enforce tags or block public IPs | RBAC-only answers |
+| Improve security posture and recommendations | Sentinel-only answers |
 

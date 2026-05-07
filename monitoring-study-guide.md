@@ -240,3 +240,66 @@ Exam questions frequently test whether you know which tier gains or loses SLA.
 - **Action groups** are reusable — one group can be attached to many alerts
 - Tags + Azure Policy = cost governance at scale
 - Understand the difference between **Metrics** (fast, numeric) and **Logs** (rich, queryable)
+
+---
+
+## Gap-Closing Review Priorities
+
+This guide already covers the core services. For AZ-305, spend extra time on the architecture decisions behind them.
+
+### Areas to Strengthen
+
+| Topic | What to be ready to explain |
+|---|---|
+| **Diagnostic Settings destinations** | When to send logs to Log Analytics, Event Hubs, or Storage based on query, integration, or retention needs |
+| **Centralized vs segmented workspaces** | Why centralization is simpler, and when sovereignty or isolation requirements force multiple workspaces |
+| **Budgets vs Advisor vs Policy** | Budgets alert on spend, Advisor recommends optimization, Policy enforces governance |
+| **Application Insights vs Azure Monitor metrics** | App behavior and dependencies vs platform metrics |
+| **Operational design** | How monitoring choices affect cost, retention, alert noise, and investigation speed |
+
+### Cost and Operations Recommendations
+
+1. Add budgets and tagging reviews to your study routine, not just technical monitoring.
+2. Practice choosing a log destination based on the requirement instead of defaulting everything to Log Analytics.
+3. Review scenarios where the cheapest storage or retention option is acceptable because query speed is not required.
+4. Pair every alerting topic with the action mechanism: Action Group, Logic App, Automation Runbook, or ITSM integration.
+
+### Practice Prompts
+
+1. A company needs to retain logs for two years for audits but rarely query them. Why is Storage a better destination than Log Analytics?
+2. A team needs to stream platform logs to a SIEM in near real time. Why is Event Hubs the right destination?
+3. Finance wants alerting before monthly spend exceeds budget. Why is Cost Management Budget the answer instead of Advisor?
+
+---
+
+## Monitoring Exam Traps
+
+### 1. Sending every log to Log Analytics by default
+- **Trap:** Log Analytics is central and queryable, so it feels universally correct
+- **Better default:** Use Storage for cheap long retention and Event Hubs for streaming integration when query is not the main requirement
+
+### 2. Choosing Azure Monitor metrics for application diagnostics
+- **Trap:** Metrics are faster and simpler
+- **Better default:** Application Insights for request flows, dependencies, failures, and app-level performance
+
+### 3. Confusing budgets, Advisor, and Policy
+- **Trap:** All three touch cost or governance
+- **Better default:** Budgets alert, Advisor recommends, Policy enforces
+
+### 4. Choosing Activity Log alerts for resource performance thresholds
+- **Trap:** Activity Log sounds like the central place for Azure events
+- **Better default:** Metric alerts for numeric thresholds and Activity Log alerts for control-plane events
+
+### 5. Ignoring the action path after the alert
+- **Trap:** The alert itself looks like the final design step
+- **Better default:** Match the action to the need: Action Group, Logic App, Automation Runbook, ITSM, or notification channel
+
+### Rapid Elimination Rules
+
+| Requirement | Eliminate First |
+|---|---|
+| Rarely queried long-term audit retention | Log Analytics-only answers |
+| Stream logs to external SIEM | Storage-only answers |
+| Track request latency and dependency calls | VM metrics-only answers |
+| Alert on VM CPU over 90 percent | Activity Log alert answers |
+| Enforce tagging or governance | Advisor-only answers |

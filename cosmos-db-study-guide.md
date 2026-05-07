@@ -251,3 +251,37 @@ A good partition key must:
 | Max regions (distribution) | No limit |
 | PITR retention (continuous backup) | Up to 30 days |
 | Max item size | 2 MB |
+
+---
+
+## 14. Cosmos DB Exam Traps
+
+### 1. Choosing Strong consistency for every global workload
+- **Trap:** Strong consistency sounds safest
+- **Better default:** Use the weakest consistency that still meets the business requirement, often Session or Bounded Staleness
+
+### 2. Picking a bad partition key because it matches a business identifier
+- **Trap:** Tenant or user IDs look natural without checking cardinality and access patterns
+- **Better default:** Choose a high-cardinality key that spreads RU usage and aligns with common queries
+
+### 3. Choosing serverless for sustained high-throughput production workloads
+- **Trap:** Serverless looks cheapest
+- **Better default:** Autoscale or provisioned throughput for predictable or heavy sustained workloads
+
+### 4. Treating multi-region reads as near-zero data loss protection
+- **Trap:** Multi-region sounds resilient enough
+- **Better default:** Near-zero data loss across regions often points to multi-region writes and the right consistency model
+
+### 5. Using Cosmos DB when relational requirements dominate
+- **Trap:** Cosmos DB is globally distributed and highly available
+- **Better default:** Re-check whether the scenario actually needs relational joins, transactions, or SQL Server compatibility
+
+### Rapid Elimination Rules
+
+| Requirement | Eliminate First |
+|---|---|
+| Existing MongoDB app with minimal changes | API for NoSQL answers |
+| Global scale with flexible consistency | SQL-first answers |
+| Sustained high RU demand | Serverless answers |
+| Need evenly distributed throughput | Low-cardinality partition keys |
+| Automatic item expiry | Designs without TTL |

@@ -207,3 +207,37 @@ Real-time event routing / reactive architecture?
 | Queue Storage max message size | 64 KB |
 | Queue Storage max TTL | 7 days |
 | Event Grid retry period | 24 hours |
+
+---
+
+## 8. Messaging Exam Traps
+
+### 1. Choosing Event Hubs for enterprise command messaging
+- **Trap:** Event Hubs handles very high throughput, so it looks like the scalable default
+- **Better default:** Service Bus for commands, workflows, sessions, dead-lettering, and guaranteed delivery features
+
+### 2. Choosing Service Bus for telemetry streaming
+- **Trap:** It is reliable and full-featured
+- **Better default:** Event Hubs for massive ingestion, replay, partitions, and consumer groups
+
+### 3. Choosing Queue Storage when advanced messaging semantics are required
+- **Trap:** It is simple and cheap
+- **Better default:** Service Bus when you need FIFO with sessions, duplicate detection, transactions, or dead-letter queues
+
+### 4. Choosing Event Grid for queued work processing
+- **Trap:** Event Grid reacts quickly to events, so it seems suitable for all event patterns
+- **Better default:** Event Grid is for reactive event routing, not durable queued work processing
+
+### 5. Ignoring the difference between stream replay and message handling
+- **Trap:** Both move events between systems
+- **Better default:** Event Hubs for replayable event streams; Service Bus for individual message processing and acknowledgment
+
+### Rapid Elimination Rules
+
+| Requirement | Eliminate First |
+|---|---|
+| Millions of telemetry events per second | Service Bus-first answers |
+| FIFO per customer or ordered workflow steps | Event Hubs-only answers |
+| Durable queue with dead-letter support | Queue Storage-only answers |
+| React to a blob created event | Service Bus-first answers |
+| Kafka protocol compatibility | Non-Event Hubs answers |

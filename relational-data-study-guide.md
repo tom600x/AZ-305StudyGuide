@@ -277,3 +277,37 @@ Open-source preference?
 | LTR max retention | 10 years |
 | PostgreSQL read replicas | 5 |
 | MySQL read replicas | 5 |
+
+---
+
+## 12. Relational Data Exam Traps
+
+### 1. Choosing Azure SQL Database when SQL Server compatibility requirements are too high
+- **Trap:** SQL Database is the default managed SQL answer
+- **Better default:** SQL Managed Instance when SQL Agent, linked servers, or near full SQL Server compatibility are required
+
+### 2. Choosing SQL Server on VMs when PaaS would satisfy the requirements
+- **Trap:** Full control feels safer
+- **Better default:** Use PaaS when OS-level access is not required and the goal is reduced management overhead
+
+### 3. Choosing active geo-replication when the scenario needs a stable listener endpoint
+- **Trap:** Geo-replication sounds like the complete DR answer
+- **Better default:** Auto-failover groups when the app must keep the same connection abstraction after failover
+
+### 4. Confusing masking with encryption
+- **Trap:** Dynamic Data Masking hides data from some users, so it appears secure enough
+- **Better default:** Always Encrypted protects data from DBAs and server-side access; DDM only masks presentation
+
+### 5. Choosing serverless for workloads that are not actually intermittent
+- **Trap:** Serverless sounds cheaper by default
+- **Better default:** Use serverless when idle periods are meaningful enough to justify pause/resume behavior
+
+### Rapid Elimination Rules
+
+| Requirement | Eliminate First |
+|---|---|
+| SQL Agent or linked servers | SQL Database-first answers |
+| No OS access needed and lower ops desired | SQL VM-first answers |
+| Same endpoint after failover | Active geo-replication-only answers |
+| DBA must not read plaintext | DDM-only answers |
+| Large set of small SaaS databases with variable load | Single database-per-app answers without Elastic Pool |

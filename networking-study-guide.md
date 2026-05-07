@@ -208,6 +208,14 @@ VNet: 10.0.0.0/16
 - **Session persistence (affinity):** None (5-tuple hash), Client IP, Client IP+Protocol
 - **HA Ports rule:** Single rule for all ports/protocols — used with NVAs
 
+### When Load Balancer Is the Right Answer
+- Choose **Azure Load Balancer** for **regional Layer-4** distribution of TCP/UDP traffic
+- Use it for **IaaS VMs/VMSS** inside a VNet or for internet-facing VM workloads
+- It is a **passthrough** load balancer: the client connects directly to the selected backend
+- It does **not** provide URL routing, TLS offload, or WAF
+
+> **Exam tip:** If the scenario is not asking for Layer-7 inspection and is centered on VMs, protocols, ultra-low latency, or internal/private load balancing, start with **Load Balancer**.
+
 ---
 
 ## 8. Azure Application Gateway
@@ -221,8 +229,25 @@ VNet: 10.0.0.0/16
 
 | SKU | WAF | Autoscaling | Zones | Use Case |
 |---|---|---|---|---|
-| **Standard v2** | No | Yes | Yes | HTTP/HTTPS LB without WAF |
-| **WAF v2** | Yes (OWASP 3.2) | Yes | Yes | Web apps requiring OWASP protection |
+| **Standard (v1)** | No | No | No | Legacy regional web load balancing |
+| **WAF (v1)** | Yes | No | No | Legacy web load balancing with WAF |
+| **Basic (v2 preview)** | No | No | Limited | Lower-traffic apps with lower SLA and no advanced traffic features |
+| **Standard v2** | No | Yes | Yes | Current HTTP/HTTPS LB without WAF |
+| **WAF v2** | Yes (OWASP 3.2) | Yes | Yes | Current web apps requiring OWASP protection |
+
+> **Exam tip:** `Basic` does exist for Application Gateway, but as a **v2 preview SKU** targeted at lower-traffic scenarios with fewer features and a lower SLA than `Standard v2`.
+>
+> **Current guidance:** Application Gateway **v1 (Standard and WAF)** is retired as of April 2026. For production design questions, prefer **Standard v2** or **WAF v2** unless a question explicitly calls out the lighter `Basic` tier.
+
+### Basic vs Standard v2
+
+| Feature Area | Basic (v2 preview) | Standard v2 |
+|---|---|---|
+| SLA | 99.9% | 99.95% |
+| Autoscaling | No | Yes |
+| Advanced features | No URL rewrite, mTLS, Private Link, Private-only, TCP/TLS proxy, or AKS via AGIC | Yes |
+| Scale limits | Very limited | Production scale |
+| Best fit | Small or lower-traffic apps | Production workloads |
 
 ### Routing Rules
 - **Basic:** Route all traffic to one backend pool
@@ -238,6 +263,14 @@ VNet: 10.0.0.0/16
 | URL routing | Yes | No |
 | WAF | Yes (WAF v2) | No |
 | Protocols | HTTP, HTTPS, WebSocket, HTTP/2 | Any TCP/UDP |
+
+### When Application Gateway Is the Right Answer
+- Choose **Application Gateway** for **regional** web applications that need **application-layer processing per request**
+- Use it when the question mentions **path-based routing**, **host-based routing**, **cookie affinity**, **TLS termination**, or **WAF**
+- It is a **terminating** load balancer: the client connects to the gateway, and the gateway opens a separate connection to the backend
+- It can front private backends in a VNet and is a common ingress choice for regional web workloads
+
+> **Exam tip:** If the app is public HTTP/HTTPS but only needs to operate in one region, **Application Gateway** is usually the first service to evaluate.
 
 ---
 
@@ -265,6 +298,13 @@ VNet: 10.0.0.0/16
 | CDN/caching | Yes | No |
 | Failover speed | Seconds (anycast) | Minutes (DNS TTL) |
 | **Choose when** | Web/HTTP apps, global CDN | Non-HTTP, DNS-based routing |
+
+### When Front Door Is the Right Answer
+- Choose **Azure Front Door** for **global HTTP/HTTPS** applications with multiple regions or distributed backends
+- Use it when the scenario mentions **performance acceleration**, **edge POP ingress**, **global failover**, **caching**, or **WAF at the edge**
+- Front Door is the global Layer-7 entry point; it often sits **in front of** regional services like Application Gateway or Load Balancer
+
+> **Exam tip:** Front Door is often the right global answer for internet-facing web apps, but the architecture can still need a **regional** load balancer behind it.
 
 ---
 
@@ -294,9 +334,60 @@ VNet: 10.0.0.0/16
 - Nested profiles: combine routing methods (e.g., Performance outer + Priority inner per region)
 - **Endpoint types:** Azure endpoints, external endpoints (any public IP/FQDN), nested Traffic Manager profiles
 
+### When Traffic Manager Is the Right Answer
+- Choose **Traffic Manager** for **global DNS-based** distribution when the endpoints can be Azure, on-premises, or other clouds
+- Use it when the scenario is **non-HTTP**, or when DNS-level routing methods like **Priority**, **Performance**, or **Geographic** best match the requirement
+- Traffic Manager does **not** proxy traffic and cannot inspect or transform requests
+
+> **Exam tip:** Traffic Manager is commonly a distractor in web-app questions when the requirement actually needs WAF, TLS offload, or fast application failover. In those cases, prefer **Front Door**.
+
 ---
 
-## 11. Azure DNS & Private DNS
+## 11. Load Balancing Decision Framework
+
+Microsoft's architecture guidance groups Azure load balancing choices across two dimensions: **global vs regional** and **HTTP(S) vs non-HTTP(S)**.
+
+### Global vs Regional
+
+| Scope | Meaning | Primary Services |
+|---|---|---|
+| **Global** | Route users across regions, clouds, or hybrid endpoints | Front Door, Traffic Manager |
+| **Regional** | Distribute traffic within one region or VNet | Load Balancer, Application Gateway |
+
+### HTTP(S) vs Non-HTTP(S)
+
+| Traffic Type | Typical Services | Why |
+|---|---|---|
+| **HTTP(S)** | Application Gateway, Front Door | Need Layer-7 routing, TLS offload, WAF, path/host decisions |
+| **Non-HTTP(S)** | Load Balancer, Traffic Manager | Need TCP/UDP or DNS-based routing without Layer-7 processing |
+
+### Passthrough vs Terminating
+
+| Model | Service Examples | Meaning |
+|---|---|---|
+| **Passthrough** | Load Balancer | Client connects directly to backend chosen by the load balancer |
+| **Terminating / Proxy** | Application Gateway, Front Door | Client connects to the load balancer, which creates a new backend connection |
+
+### Fast Selection Rules
+
+1. **Regional VM or TCP/UDP workload** -> Load Balancer
+2. **Regional web app needing WAF, TLS offload, or URL routing** -> Application Gateway
+3. **Global web app needing acceleration or fast failover** -> Front Door
+4. **Global DNS-based routing for any endpoint type** -> Traffic Manager
+5. **API-only backend already using APIM** -> APIM can load balance API backends, but do not choose it solely as a general-purpose load balancer
+
+### Layered Architectures Are Common
+
+AZ-305 often expects a combination, not a single product:
+
+- **Front Door + Application Gateway**: global web routing at the edge plus regional WAF and routing
+- **Front Door + Load Balancer**: global HTTP entry plus regional Layer-4 distribution to VMs
+- **Traffic Manager + Application Gateway**: DNS-based regional failover with regional Layer-7 inspection
+
+> **Exam tip:** When the workload has multiple tiers or multiple regions, evaluate each traffic hop separately. One architecture can legitimately need both a global and a regional load balancing service.
+
+
+## 12. Azure DNS & Private DNS
 
 ### Azure DNS (Public)
 - Host public DNS zones in Azure
@@ -324,7 +415,7 @@ Each PaaS service needs a specific private DNS zone:
 
 ---
 
-## 12. Private Endpoints & Service Endpoints
+## 13. Private Endpoints & Service Endpoints
 
 ### Service Endpoints
 - Extends VNet identity to the PaaS service
@@ -351,7 +442,7 @@ Each PaaS service needs a specific private DNS zone:
 
 ---
 
-## 13. Azure Bastion
+## 14. Azure Bastion
 
 ### What It Is
 - Managed jump box — RDP/SSH via browser over TLS 443
@@ -370,7 +461,7 @@ Each PaaS service needs a specific private DNS zone:
 
 ---
 
-## 14. Network Watcher & Monitoring
+## 15. Network Watcher & Monitoring
 
 | Tool | Purpose |
 |---|---|
@@ -383,7 +474,7 @@ Each PaaS service needs a specific private DNS zone:
 
 ---
 
-## 15. DDoS Protection
+## 16. DDoS Protection
 
 | Plan | Protection | Use Case |
 |---|---|---|
@@ -395,7 +486,7 @@ Each PaaS service needs a specific private DNS zone:
 
 ---
 
-## 16. Routing
+## 17. Routing
 
 ### Route Priority Order
 1. System routes (auto-created)
@@ -414,7 +505,7 @@ Each PaaS service needs a specific private DNS zone:
 
 ---
 
-## 17. Azure Virtual WAN (vWAN)
+## 18. Azure Virtual WAN (vWAN)
 
 ### What It Is
 Azure Virtual WAN is a **networking service that provides any-to-any connectivity at scale** — branches, VNets, and remote users connected through a Microsoft-managed hub. Replaces manual hub-spoke topologies for large enterprises.
@@ -450,7 +541,7 @@ Azure Virtual WAN is a **networking service that provides any-to-any connectivit
 
 ---
 
-## 18. Networking Topology Decision Guide
+## 19. Networking Topology Decision Guide
 
 ```
 Connectivity to on-premises?
@@ -485,7 +576,7 @@ Remote management?
 
 ---
 
-## 19. Exam Scenario Cheat Sheet
+## 20. Exam Scenario Cheat Sheet
 
 | Scenario | Answer |
 |---|---|
@@ -510,7 +601,7 @@ Remote management?
 
 ---
 
-## 20. Key Limits to Know
+## 21. Key Limits to Know
 
 | Resource | Limit |
 |---|---|
@@ -523,3 +614,98 @@ Remote management?
 | Virtual WAN hubs per vWAN | 1 per region (multiple regions supported) |
 | App Gateway v2 max instances (autoscale) | 125 |
 | Front Door PoPs | 100+ globally |
+
+---
+
+## 22. Likely Exam Gaps to Review
+
+These are the networking decisions that most often separate correct answers from plausible distractors.
+
+### High-Yield Decision Pairs
+
+| Decision | Choose This When | Re-check This Distractor |
+|---|---|---|
+| **Private Endpoint** | Private IP is required for a PaaS service | Service Endpoint only keeps the service public |
+| **Service Endpoint** | You need simpler VNet-based restriction without private IP requirements | Private Endpoint when data exfiltration or DNS control matters |
+| **ExpressRoute** | Dedicated private connectivity, predictable performance, enterprise hybrid design | VPN Gateway for lower-cost or faster setup |
+| **VPN Gateway** | Cost-sensitive or smaller hybrid connectivity requirements | ExpressRoute when SLA and throughput requirements are strict |
+| **Application Gateway** | Layer 7 regional load balancing, WAF, path-based routing | Load Balancer for non-HTTP traffic |
+| **Front Door** | Global HTTP/HTTPS entry point, WAF, acceleration, CDN-like edge presence | Traffic Manager when only DNS routing is needed |
+| **Traffic Manager** | DNS-based global routing for HTTP or non-HTTP endpoints | Front Door when you need TLS termination or WAF at the edge |
+
+### Private Connectivity Checklist
+
+Before answering a networking question, confirm whether the scenario requires:
+
+1. No public endpoint at all.
+2. Name resolution through Private DNS.
+3. Inspection of outbound or inbound traffic.
+4. Hybrid connectivity from branches or datacenters.
+5. Regional vs global failover.
+
+If the question mentions secure access to Azure SQL, Storage, Key Vault, or App Service from inside a VNet, start by testing **Private Endpoint + Private DNS** as the leading answer.
+
+### Practice Prompts
+
+1. A global web app needs WAF, TLS termination, and low-latency routing. Why is Front Door a better fit than Traffic Manager?
+2. A company needs private access from VNets to Azure SQL with no public exposure. Why is Private Endpoint better than Service Endpoint?
+3. A hub-spoke network must support many branches and simplify routing at scale. Why might Virtual WAN be better than manually built hub-spoke?
+4. A workload needs inspection of HTTP traffic plus path-based routing in one region. Why is Application Gateway a better fit than Azure Load Balancer?
+
+---
+
+## 23. Load Balancing Exam Traps
+
+These are common AZ-305 distractors that show up in practice questions.
+
+### 1. Choosing Traffic Manager for a web app that needs WAF or TLS offload
+- **Wrong because:** Traffic Manager is DNS-based and does not inspect or terminate HTTP(S)
+- **Usually right answer:** Front Door for global web apps, or Application Gateway for regional web apps
+
+### 2. Choosing Load Balancer for HTTP path-based routing
+- **Wrong because:** Load Balancer is Layer 4 only
+- **Usually right answer:** Application Gateway if the requirement mentions URL path, host-based routing, cookies, or WAF
+
+### 3. Choosing Application Gateway for non-HTTP protocols by default
+- **Wrong because:** Most App Gateway questions on AZ-305 are really about Layer-7 web delivery, not generic TCP/UDP balancing
+- **Usually right answer:** Load Balancer for general TCP/UDP scenarios unless the question explicitly needs App Gateway TCP/TLS proxy behavior
+
+### 4. Forgetting that global and regional load balancing can both be required
+- **Wrong because:** Many architectures need one service at the edge and another inside the region
+- **Usually right answer:** Front Door plus Application Gateway or Front Door plus Load Balancer
+
+### 5. Confusing fastest failover with DNS-based failover
+- **Wrong because:** DNS caching slows Traffic Manager failover
+- **Usually right answer:** Front Door when the scenario emphasizes fast failover or better user experience during regional issues
+
+### 6. Picking Front Door for non-HTTP workloads
+- **Wrong because:** Front Door is HTTP/HTTPS only
+- **Usually right answer:** Traffic Manager for global DNS-based routing or Load Balancer for regional TCP/UDP workloads
+
+### 7. Treating API Management as a general-purpose load balancer
+- **Wrong because:** APIM is primarily an API gateway
+- **Usually right answer:** Use APIM load balancing only when the workload is already API-centric and APIM is already justified for gateway features
+
+### 8. Ignoring hosting model in the answer
+- **Wrong because:** IaaS VM workloads often point toward Load Balancer, while web app delivery requirements point toward Application Gateway or Front Door
+- **Usually right answer:** Match the load balancing choice to whether the backend is IaaS, PaaS, AKS, or API-only
+
+### 9. Choosing the most powerful service instead of the least-complex service that fits
+- **Wrong because:** AZ-305 often rewards the design that meets requirements with lower operational complexity
+- **Usually right answer:** Prefer the simplest option that still satisfies scope, protocol, security, and failover requirements
+
+### 10. Solving the whole workload with one product
+- **Wrong because:** Different hops in the same architecture can have different requirements
+- **Usually right answer:** Evaluate internet ingress, regional distribution, and private backend connectivity separately
+
+### Rapid Elimination Rules
+
+If you see this requirement, eliminate these distractors first:
+
+| Requirement | Eliminate First |
+|---|---|
+| WAF, TLS offload, URL path routing | Load Balancer, Traffic Manager |
+| Non-HTTP protocol | Front Door |
+| Global web acceleration | Application Gateway alone |
+| Regional internal VM balancing | Front Door, Traffic Manager |
+| Private PaaS connectivity | Service Endpoint if private IP is mandatory |

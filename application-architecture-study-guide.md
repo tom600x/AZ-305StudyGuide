@@ -339,6 +339,39 @@ Azure Logic Apps is a **low-code workflow automation platform** for integrating 
 
 ## 8. Exam Scenario Cheat Sheet
 
+---
+
+## 9. Likely Exam Gaps to Review
+
+These topics are the highest-value follow-up areas after reading this guide:
+
+### Service-Selection Tradeoffs
+
+Be able to justify these choices quickly:
+
+| Decision | Prefer When | Common Distractor |
+|---|---|---|
+| **App Service** | Standard web/API hosting with minimal ops | AKS for simple web apps |
+| **Azure Functions** | Event-driven execution, bursty workloads, pay-per-execution | App Service when there is no always-on web front end |
+| **Container Apps** | Microservices or APIs in containers without needing Kubernetes control plane management | AKS when Kubernetes features are not required |
+| **AKS** | Complex microservices, custom networking, service mesh, full Kubernetes control | Container Apps for cases that do not need cluster-level control |
+| **Logic Apps** | Workflow orchestration and connector-heavy integration | Functions for low-code business workflows |
+
+### Cost and Complexity Checks
+
+- If two designs meet the requirements, AZ-305 often prefers the **less operationally complex** option.
+- If the workload is event-driven or sporadic, check whether a **serverless** answer beats a provisioned one.
+- If the scenario mentions strict network control, policy enforcement, or advanced ingress, re-check whether the simpler platform still fits.
+
+### Practice Prompts
+
+Use these to test architecture judgment:
+
+1. A partner-facing API needs JWT validation, throttling, and external onboarding. Why is APIM better than exposing the API directly?
+2. A team wants microservices with HTTP ingress, KEDA autoscaling, and minimal Kubernetes operations. Why is Container Apps better than AKS?
+3. A workflow mostly moves data between SaaS systems and sends approvals. Why is Logic Apps better than Functions?
+4. A public web app needs zero-downtime release and instant rollback. Why are deployment slots or blue-green safer than direct deployment?
+
 | Scenario | Answer |
 |---|---|
 | API gateway for internal + external APIs, need VNet | APIM Premium tier |
@@ -361,3 +394,37 @@ Azure Logic Apps is a **low-code workflow automation platform** for integrating 
 | Logic App needs private endpoint, VNet integration | Logic Apps Standard plan |
 | Automate business workflow, 400+ SaaS connectors | Azure Logic Apps |
 | Logic App needs custom compute logic | Azure Functions action within Logic App |
+
+---
+
+## 10. Application Architecture Exam Traps
+
+### 1. Choosing AKS when the requirement is only container hosting
+- **Trap:** AKS sounds more capable, so it feels safer
+- **Better default:** Container Apps or App Service when Kubernetes control is not a requirement
+
+### 2. Choosing Functions for workflow orchestration
+- **Trap:** Functions can run code, so they look flexible enough for everything
+- **Better default:** Logic Apps when the scenario is connector-heavy, approval-based, or low-code integration
+
+### 3. Choosing App Configuration for secrets
+- **Trap:** It stores configuration, so it looks like a place for connection strings and passwords
+- **Better default:** Key Vault for secrets, keys, and certificates; App Configuration for non-secret settings and feature flags
+
+### 4. Choosing APIM only as a load balancer
+- **Trap:** APIM can route traffic across API backends
+- **Better default:** Use APIM when you also need API gateway capabilities like policies, subscriptions, transformation, or developer onboarding
+
+### 5. Choosing the most complex microservices platform by default
+- **Trap:** AKS appears to be the enterprise answer for every distributed app
+- **Better default:** Pick the least operationally complex option that meets networking, scaling, and control requirements
+
+### Rapid Elimination Rules
+
+| Requirement | Eliminate First |
+|---|---|
+| Feature flags or dynamic config | Key Vault-only answers |
+| Secret storage | App Configuration-only answers |
+| Approval workflow or SaaS orchestration | Pure Functions answers |
+| Microservices with minimal Kubernetes expertise | AKS-first answers |
+| API throttling, JWT validation, external onboarding | Direct backend exposure |

@@ -134,6 +134,31 @@ Week 5 — Fill Gaps
 
 ---
 
+## Exam Traps Index
+
+Use these sections for final review before practice exams. They summarize the most common AZ-305 distractors and elimination rules by domain.
+
+- [Networking Load Balancing Exam Traps](./networking-study-guide.md#23-load-balancing-exam-traps)
+- [Application Architecture Exam Traps](./application-architecture-study-guide.md#10-application-architecture-exam-traps)
+- [Compute Exam Traps](./compute-study-guide.md#10-compute-exam-traps)
+- [Identity and Governance Exam Traps](./identity-governance-study-guide.md#12-identity-and-governance-exam-traps)
+- [Monitoring Exam Traps](./monitoring-study-guide.md#monitoring-exam-traps)
+- [BCDR Exam Traps](./bcdr-study-guide.md#bcdr-exam-traps)
+- [Storage Exam Traps](./storage-study-guide.md#13-storage-exam-traps)
+- [Relational Data Exam Traps](./relational-data-study-guide.md#12-relational-data-exam-traps)
+- [Cosmos DB Exam Traps](./cosmos-db-study-guide.md#14-cosmos-db-exam-traps)
+- [Data Integration Exam Traps](./data-integration-study-guide.md#8-data-integration-exam-traps)
+- [Messaging Exam Traps](./messaging-study-guide.md#8-messaging-exam-traps)
+- [Migration Exam Traps](./migrations-study-guide.md#9-migration-exam-traps)
+
+Recommended use:
+
+1. Review the trap section before each domain study session.
+2. Re-read it immediately after missing a practice question in that domain.
+3. Use the elimination tables as a last-pass filter during timed exams.
+
+---
+
 ## Probability of Passing on the First Attempt
 
 | Study Approach | Estimated Pass Probability |
@@ -154,3 +179,78 @@ Week 5 — Fill Gaps
 - **The official study guide** — Cross-reference with the [Microsoft Learn AZ-305 study guide](https://learn.microsoft.com/en-us/credentials/certifications/resources/study-guides/az-305) to confirm full topic coverage.
 
 > Microsoft's publicly reported first-attempt pass rate for AZ-305 candidates who self-study with mixed resources is approximately **60–65%**.
+
+---
+
+## Current Gap Focus
+
+Based on the current guide set, the biggest remaining AZ-305 pass risks are not missing products, but missing **design trade-off practice** in these areas:
+
+1. **Private connectivity and hybrid network design**
+  - ExpressRoute vs VPN Gateway
+  - Private Endpoints vs Service Endpoints
+  - Front Door vs Traffic Manager vs Application Gateway vs Load Balancer
+2. **Governance and security at scale**
+  - Management groups, Azure Policy, RBAC, and cost controls working together
+  - Managed identity and Key Vault choices in architecture scenarios
+3. **Business continuity design decisions**
+  - Backup vs HA vs DR
+  - Zone redundancy vs geo-redundancy
+  - Application failover patterns, not just data failover
+4. **Operational and cost-aware architecture**
+  - Cost Management, budgets, tagging, Advisor, and monitoring choices
+  - Choosing the least-complex design that still satisfies RTO/RPO/security requirements
+5. **Service-selection tradeoffs under constraints**
+  - AKS vs Container Apps vs App Service vs Functions
+  - SQL Database vs Managed Instance vs Cosmos DB vs PostgreSQL
+
+---
+
+## Gap-Driven Study Plan
+
+Use this plan instead of only reading guide-by-guide in sequence.
+
+### Week 1 — Service Selection and Architecture Tradeoffs
+- [application-architecture-study-guide.md](./application-architecture-study-guide.md)
+- [compute-study-guide.md](./compute-study-guide.md)
+- [relational-data-study-guide.md](./relational-data-study-guide.md)
+- [cosmos-db-study-guide.md](./cosmos-db-study-guide.md)
+
+Focus on answering: "Which service is the best fit, and why is each alternative worse for this scenario?"
+
+### Week 2 — Private Connectivity and Hybrid Networking
+- [networking-study-guide.md](./networking-study-guide.md)
+- [identity-governance-study-guide.md](./identity-governance-study-guide.md)
+
+Focus on hybrid connectivity, ingress choice, private PaaS access, hub-spoke design, and governance boundaries.
+
+### Week 3 — Monitoring, Cost, and Governance at Scale
+- [monitoring-study-guide.md](./monitoring-study-guide.md)
+- [identity-governance-study-guide.md](./identity-governance-study-guide.md)
+
+Focus on operational design decisions: workspace strategy, diagnostic destinations, budget alerts, Policy enforcement, and least-privilege patterns.
+
+### Week 4 — BCDR and Final Exam Drills
+- [bcdr-study-guide.md](./bcdr-study-guide.md)
+- [migrations-study-guide.md](./migrations-study-guide.md)
+- 2-3 full practice exams
+
+Focus on mapping requirements to RPO/RTO, failover design, data protection, and migration tradeoffs.
+
+---
+
+## How to Use the Guides to Close Gaps
+
+For each study session, do these four steps:
+
+1. Read one section.
+2. Write a one-line rule: "If the requirement says X, prefer Y."
+3. Compare it against the closest distractor service.
+4. Create one case-study-style question from the section and answer it without notes.
+
+If you miss a practice question, label it as one of these:
+- **Knowledge gap** — you did not know the service or feature
+- **Decision gap** — you knew the services but chose the wrong design
+- **Constraint gap** — you missed an RPO, security, cost, latency, or governance requirement
+
+AZ-305 failures are often decision gaps, not memorization gaps.
