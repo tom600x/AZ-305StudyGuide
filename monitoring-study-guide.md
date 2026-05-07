@@ -57,7 +57,7 @@ SigninLogs
 | Agent | Platform | Data Collected | Status |
 |---|---|---|---|
 | **Azure Monitor Agent (AMA)** | Windows / Linux | Metrics + Logs via Data Collection Rules | Current — preferred |
-| **MMA / OMS Agent** | Windows / Linux | Logs only | Legacy — being retired |
+| **MMA / OMS Agent** | Windows / Linux | Logs only | Legacy — retired Aug 31, 2024 |
 | **Diagnostics Extension (WAD/LAD)** | Windows / Linux | Metrics → Storage Account / Event Hubs | Legacy |
 
 - **Data Collection Rules (DCR):** AMA uses DCRs to define what data to collect and where to send it — centrally managed, reusable
@@ -203,7 +203,7 @@ Exam questions frequently test whether you know which tier gains or loses SLA.
 | **Service Bus** | Basic | 99.9% | No topics |
 | **Service Bus** | Standard / Premium | 99.9% | Premium adds VNet, zone redundancy |
 
-> **Exam tip:** Any **Developer** or **Free/Shared/Basic** tier (APIM Developer, Redis Basic, App Service Free/Shared, AKS Free) typically means **no production SLA**. Upgrading to the next tier is the fix.
+> **Exam tip:** Any **Developer** or **Free/Shared/Basic** tier (APIM Developer, Redis Basic, App Service Free/Shared, AKS Free) is a risk signal for production. Check the service-specific SLA details instead of assuming every Basic tier is production-ready.
 
 ---
 

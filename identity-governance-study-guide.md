@@ -277,7 +277,7 @@ Before answering an RBAC question, check these in order:
 - **Blueprint assignment** locks down governance artifacts
 - **vs Bicep/ARM:** Blueprints = governance packages with compliance tracking; Bicep/ARM = pure IaC deployment
 
-> **Note:** Azure Blueprints is being deprecated in favor of Deployment Stacks + Azure Policy + RBAC combination.
+> **Note:** Azure Blueprints (Preview) is deprecated effective **July 11, 2026**. Prefer **Deployment Stacks + Azure Policy + RBAC**.
 
 ---
 
@@ -302,7 +302,7 @@ Before answering an RBAC question, check these in order:
 
 | Setting | Description |
 |---|---|
-| **Soft Delete** | Deleted objects retained for 7–90 days (default 90) — must be enabled |
+| **Soft Delete** | Deleted objects retained for 7–90 days (default 90) — on by default for new vaults |
 | **Purge Protection** | Prevents permanent deletion during retention period — required for compliance |
 
 ### Customer-Managed Keys (CMK)

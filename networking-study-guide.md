@@ -197,7 +197,9 @@ VNet: 10.0.0.0/16
 | SLA | None | 99.99% |
 | Outbound rules | No | Yes |
 | Cost | Free | Per rule + data |
-| **Status** | Being retired | Use for all new deployments |
+| **Status** | Retired Sept 30, 2025 | Use for all supported deployments |
+
+> **Current guidance:** Basic Load Balancer is retired. For current Azure designs, use **Standard Load Balancer**.
 
 ### Load Balancer Types
 - **Public LB:** Internet-facing, distributes traffic to VMs

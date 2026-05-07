@@ -14,14 +14,16 @@
 
 ---
 
-## Exam Domain Weights (2024–2026)
+## Exam Domain Weights (As of April 17, 2026)
 
 | Domain | Weight | Key Services Tested |
 |---|---|---|
-| Design infrastructure solutions | ~35% | Networking, VMs, AKS, App Service, APIM, Migrations |
-| Design identity, governance & monitoring solutions | ~25% | Entra ID, RBAC, Policy, Key Vault, Monitor, Sentinel |
-| Design data storage solutions | ~25% | Storage, SQL, Cosmos DB, ADF, Synapse, Data Lake |
-| Design business continuity solutions | ~15% | Backup, ASR, HA patterns, geo-replication, RTO/RPO |
+| Design infrastructure solutions | 30–35% | Networking, VMs, AKS, App Service, APIM, Migrations |
+| Design identity, governance & monitoring solutions | 25–30% | Entra ID, RBAC, Policy, Key Vault, Monitor, Sentinel |
+| Design data storage solutions | 20–25% | Storage, SQL, Cosmos DB, ADF, Synapse, Data Lake |
+| Design business continuity solutions | 15–20% | Backup, ASR, HA patterns, geo-replication, RTO/RPO |
+
+> **Current skills measured:** The April 17, 2026 study guide explicitly separates **data integration** and **data analysis** under the data storage domain, and includes **load-balancing and routing** under network solutions.
 
 ---
 
