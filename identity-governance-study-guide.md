@@ -305,6 +305,15 @@ Before answering an RBAC question, check these in order:
 | **Soft Delete** | Deleted objects retained for 7–90 days (default 90) — on by default for new vaults |
 | **Purge Protection** | Prevents permanent deletion during retention period — required for compliance |
 
+### Backup and Restore Notes
+- Key Vault backup and restore is for **individual objects**: **keys, secrets, and certificates**.
+- Key Vault does **not** back up an entire vault in one operation.
+- Backup output is an encrypted blob that **cannot be decrypted outside Azure**.
+- A backup can be restored only to a vault in the **same Azure subscription** and **same Azure geography**.
+- It does **not** have to be the exact same region, so "same region only" is too strict.
+- Backups are **point-in-time snapshots** and do not stay synchronized automatically.
+- Backup of an object with more than **500 versions** is not supported.
+
 ### Customer-Managed Keys (CMK)
 - Key Vault stores the key that encrypts Azure resource data
 - Supported services: Storage, Disk Encryption, SQL, Cosmos DB, etc.
@@ -486,7 +495,11 @@ Microsoft Sentinel is a cloud-native **SIEM (Security Information and Event Mana
 - **Trap:** Key Vault is correct, but the design omits RBAC, soft delete, or purge protection
 - **Better default:** Match the access model and data protection settings to the requirement
 
-### 5. Using Sentinel when the requirement is posture management
+### 5. Assuming Key Vault backup restore requires the exact same region
+- **Trap:** "Restore must be in the same region" sounds safe, but it is not the documented rule.
+- **Better default:** Key Vault backup restore requires the **same subscription** and **same Azure geography**, not necessarily the exact same region.
+
+### 6. Using Sentinel when the requirement is posture management
 - **Trap:** Sentinel sounds like the broadest security answer
 - **Better default:** Defender for Cloud for posture, recommendations, and secure score; Sentinel for SIEM/SOAR and investigation
 
